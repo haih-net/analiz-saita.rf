@@ -6,6 +6,7 @@ export function Header() {
       <div className="site-container site-header__content">
         <Link className="site-brand" to="/" aria-label="HAIH home">
           HAIH
+          <img src="/logo.png" alt="" width={32} height={32} />
         </Link>
         <nav aria-label="Main">
           <ul className="site-navigation">

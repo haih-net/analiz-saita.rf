@@ -35,7 +35,11 @@ function serveShared(): Plugin {
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   return {
-    plugins: [wyw({ include: ['**/*.{ts,tsx}'] }), reactRouter(), serveShared()],
+    plugins: [
+      wyw({ include: ['**/*.{ts,tsx}'] }),
+      reactRouter(),
+      serveShared(),
+    ],
     server: { port: 3000, strictPort: true, allowedHosts: ['haih.localhost'] },
     define: {
       'import.meta.env.BETTERLYTICS_SITE_ID': JSON.stringify(
