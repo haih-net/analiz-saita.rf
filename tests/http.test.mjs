@@ -3,7 +3,11 @@ import assert from 'node:assert/strict'
 
 const base = process.env.TEST_URL || 'http://localhost:8088'
 test('prerendered routes expose content and metadata', async () => {
-  for (const [path, title] of [['/', 'HAIH — architecture foundation'], ['/solutions', 'Solutions — HAIH'], ['/architecture', 'Architecture — HAIH']]) {
+  for (const [path, title] of [
+    ['/', 'HAIH — architecture foundation'],
+    ['/solutions', 'Solutions — HAIH'],
+    ['/architecture', 'Architecture — HAIH'],
+  ]) {
     const response = await fetch(base + path)
     assert.equal(response.status, 200)
     const html = await response.text()
@@ -13,7 +17,9 @@ test('prerendered routes expose content and metadata', async () => {
   }
 })
 test('missing paths and assets preserve 404; methods are restricted', async () => {
-  const document = await fetch(base + '/missing-page', { headers: { Accept: 'text/html' } })
+  const document = await fetch(base + '/missing-page', {
+    headers: { Accept: 'text/html' },
+  })
   assert.equal(document.status, 404)
   assert.match(document.headers.get('content-type'), /text\/html/)
   const asset = await fetch(base + '/assets/missing.js')

@@ -1,6 +1,12 @@
 {
   "extends": "./tsconfig.base.json",
-  "include": ["app/**/*", "*.ts", ".react-router/types/**/*"],
+  "include": [
+    "app/**/*",
+    "*.ts",
+    ".react-router/types/**/*",
+    ".storybook/**/*.ts",
+    ".storybook/**/*.tsx"
+  ],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "types": ["node", "vite/client"],

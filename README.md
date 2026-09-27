@@ -19,15 +19,15 @@ The website you see is its own proof. Every architectural decision, every depend
 
 ## Tech Stack
 
-| Layer | Technology | Purpose |
-|-------|------------|---------|
-| **UI** | React 19 + TypeScript | Type-safe components with modern hooks |
-| **Routing** | React Router 7 | SPA navigation, code splitting, SSR-ready |
-| **Build** | Vite 8 | Fast HMR, optimized production bundles |
-| **Server** | Node.js 22 + sirv | Minimal static file serving |
-| **Cache** | Varnish 7 | Edge caching with explicit policies |
-| **Proxy** | Traefik 3 | TLS termination, routing, load balancing |
-| **Container** | Docker Compose | Reproducible environments |
+| Layer         | Technology            | Purpose                                   |
+| ------------- | --------------------- | ----------------------------------------- |
+| **UI**        | React 19 + TypeScript | Type-safe components with modern hooks    |
+| **Routing**   | React Router 7        | SPA navigation, code splitting, SSR-ready |
+| **Build**     | Vite 8                | Fast HMR, optimized production bundles    |
+| **Server**    | Node.js 22 + sirv     | Minimal static file serving               |
+| **Cache**     | Varnish 7             | Edge caching with explicit policies       |
+| **Proxy**     | Traefik 3             | TLS termination, routing, load balancing  |
+| **Container** | Docker Compose        | Reproducible environments                 |
 
 ## Quick Start
 
@@ -58,23 +58,25 @@ docker compose -f compose.yaml -f compose.prod.yaml up -d
 
 ### Ports
 
-| Mode | Service | Default Port | Variable |
-|------|---------|--------------|----------|
-| Local | Vite/Node.js | 3000 | `PORT` |
-| Docker dev | Traefik | 8087 | `SITE_PORT` |
-| Docker dev | App direct | 3001 | `APP_PORT` |
-| Docker prod | Traefik | 8088 | `SITE_PORT` |
+| Mode        | Service      | Default Port | Variable    |
+| ----------- | ------------ | ------------ | ----------- |
+| Local       | Vite/Node.js | 3000         | `PORT`      |
+| Docker dev  | Traefik      | 8087         | `SITE_PORT` |
+| Docker dev  | App direct   | 3001         | `APP_PORT`  |
+| Docker prod | Traefik      | 8088         | `SITE_PORT` |
 
 External network: `NETWORK_NAME` (required for Docker)
 
 ## Architecture Highlights
 
 **Request Flow (Production):**
+
 ```
 Browser → Traefik → Varnish → Node.js → Static Assets
 ```
 
 **Request Flow (Development):**
+
 ```
 Browser → Traefik → Vite Dev Server → Source Files
 ```
@@ -115,7 +117,7 @@ Every solution in this project follows a consistent evaluation model:
 4. **Trade-offs** — Where is the cost justified?
 5. **Evidence** — What has been verified?
 
-This isn't methodology theater. It's how we actually build — and how AI assistants can make better recommendations when they understand *why*, not just *what*.
+This isn't methodology theater. It's how we actually build — and how AI assistants can make better recommendations when they understand _why_, not just _what_.
 
 ## Status
 

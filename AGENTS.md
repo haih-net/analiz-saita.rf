@@ -15,6 +15,7 @@ All project content, UI copy, documentation, code identifiers, and commit/releas
 Start with the need, not with a preferred technology.
 
 For each proposed solution, distinguish:
+
 - Purpose: the need it is intended to satisfy.
 - Capabilities: what it provides or is expected to provide.
 - Requirements: the environment, inputs, dependencies, resources, and constraints it needs.
@@ -63,6 +64,7 @@ Plan for build-time rendering of public pages followed by React hydration. Some 
 Initial client rendering must agree with generated HTML. Browser-only updates happen at an appropriate later phase.
 
 Required integration capabilities:
+
 - Direct opening and refreshing of public URLs.
 - SPA navigation with working browser history, scroll behavior, and focus handling.
 - Initial HTML and page metadata suitable for search engines.
@@ -104,6 +106,7 @@ The production artifact should contain the files and server dependencies actuall
 ## Cache and HTTP contract
 
 Make caching explicit and verifiable:
+
 - HTML must become fresh after publication according to a defined deployment/cache policy.
 - Content-hashed assets may have long-lived immutable caching.
 - Development updates must never be hidden by production caching.
@@ -115,6 +118,7 @@ Document cache refresh/invalidation as part of publication before declaring prod
 ## Verification for this phase
 
 Create a small representative site that can demonstrate:
+
 1. Reproducible installation, development startup, and production build.
 2. React edits reflected through the Traefik development URL.
 3. A public page opened directly, then internal SPA navigation and back/forward navigation.
