@@ -9,7 +9,7 @@ export function TechnologyMap() {
           <h2 id="technology-title">Every dependency needs a reason.</h2>
           <p>The current choices, with their requirements and trade-offs.</p>
         </div>
-        <Link to="/solutions">
+        <Link to="/solutions#tooling">
           Explore the decisions <span aria-hidden="true">↗</span>
         </Link>
       </div>

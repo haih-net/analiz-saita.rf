@@ -16,7 +16,7 @@ export function Hero() {
           a time.
         </p>
         <div className="main-page__actions">
-          <Link className="main-page__button" to="/architecture">
+          <Link className="main-page__button" to="/solutions#application">
             See what works <span aria-hidden="true">→</span>
           </Link>
           <a

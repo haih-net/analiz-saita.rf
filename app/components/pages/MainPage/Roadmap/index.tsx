@@ -1,3 +1,4 @@
+import { Link } from 'react-router'
 import roadmap from './roadmap.png'
 
 export function Roadmap() {
@@ -28,6 +29,9 @@ export function Roadmap() {
           justifies them.
         </figcaption>
       </figure>
+      <Link className="main-page__section-link" to="/solutions#future">
+        Explore planned solutions <span aria-hidden="true">↗</span>
+      </Link>
       <p className="main-page__question">
         Can we add the capability without carrying unnecessary complexity?
       </p>

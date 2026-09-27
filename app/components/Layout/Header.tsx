@@ -19,9 +19,6 @@ export function Header() {
               <NavLink to="/solutions">Solutions</NavLink>
             </li>
             <li>
-              <NavLink to="/architecture">Architecture</NavLink>
-            </li>
-            <li>
               <a href="https://github.com/haih-net/haih.site">GitHub</a>
             </li>
           </ul>

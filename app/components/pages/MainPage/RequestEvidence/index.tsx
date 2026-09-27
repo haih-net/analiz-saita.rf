@@ -44,8 +44,8 @@ export function RequestEvidence() {
           </figcaption>
         </figure>
       </div>
-      <Link className="main-page__section-link" to="/architecture">
-        Inspect the HTTP behavior <span aria-hidden="true">↗</span>
+      <Link className="main-page__section-link" to="/solutions#varnish">
+        Explore delivery and caching <span aria-hidden="true">↗</span>
       </Link>
     </section>
   )
