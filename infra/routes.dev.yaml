@@ -8,4 +8,4 @@ http:
     site:
       loadBalancer:
         servers:
-          - url: http://app:5173
+          - url: http://app:3000

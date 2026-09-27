@@ -35,14 +35,37 @@ The website you see is its own proof. Every architectural decision, every depend
 # Development (with hot reload)
 npm install
 npm run dev
+# → http://127.0.0.1:3000
 
 # Production build
 npm run build
 npm start
-
-# Full stack with Docker
-docker compose up
+# → http://127.0.0.1:3000
 ```
+
+## Docker
+
+```bash
+# Development
+docker compose -f compose.yaml -f compose.dev.yaml up -d
+# → http://127.0.0.1:8087 (Traefik)
+# → http://127.0.0.1:3001 (App direct)
+
+# Production
+docker compose -f compose.yaml -f compose.prod.yaml up -d
+# → http://127.0.0.1:8088 (Traefik → Varnish → Node.js)
+```
+
+### Ports
+
+| Mode | Service | Default Port | Variable |
+|------|---------|--------------|----------|
+| Local | Vite/Node.js | 3000 | `PORT` |
+| Docker dev | Traefik | 8087 | `SITE_PORT` |
+| Docker dev | App direct | 3001 | `APP_PORT` |
+| Docker prod | Traefik | 8088 | `SITE_PORT` |
+
+External network: `NETWORK_NAME` (required for Docker)
 
 ## Architecture Highlights
 

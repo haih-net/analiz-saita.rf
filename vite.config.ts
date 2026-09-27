@@ -3,5 +3,5 @@ import { reactRouter } from '@react-router/dev/vite'
 
 export default defineConfig({
   plugins: [reactRouter()],
-  server: { port: 5173, strictPort: true, allowedHosts: ['haih.localhost'] },
+  server: { port: 3000, strictPort: true, allowedHosts: ['haih.localhost'] },
 })

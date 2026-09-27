@@ -5,6 +5,7 @@ RUN npm ci
 
 FROM dependencies AS development
 COPY . .
+EXPOSE 3000
 CMD ["npm", "run", "dev"]
 
 FROM development AS build

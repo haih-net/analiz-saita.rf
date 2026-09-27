@@ -1,10 +1,11 @@
-name: haih-site
 services:
   app:
     build:
       context: .
-      target: production
     init: true
+    networks:
+      - default
+      - external
   cache:
     image: varnish:7.7.3
     volumes:
@@ -13,14 +14,18 @@ services:
       - /var/lib/varnish:exec,mode=1777
     depends_on:
       - app
+    networks:
+      - default
+      - external
   proxy:
     image: traefik:v3.6.1
     command:
       - --entrypoints.web.address=:8080
       - --providers.file.filename=/etc/traefik/routes.yaml
-    ports:
-      - '127.0.0.1:${SITE_PORT:-8088}:8080'
-    volumes:
-      - ./infra/routes.production.yaml:/etc/traefik/routes.yaml:ro
-    depends_on:
-      - cache
+    networks:
+      - default
+      - external
+networks:
+  external:
+    name: ${NETWORK_NAME}
+    external: true

@@ -1,0 +1,12 @@
+name: haih-site
+services:
+  app:
+    build:
+      target: production
+  proxy:
+    ports:
+      - '127.0.0.1:${SITE_PORT:-8088}:8080'
+    volumes:
+      - ./infra/routes.production.yaml:/etc/traefik/routes.yaml:ro
+    depends_on:
+      - cache
