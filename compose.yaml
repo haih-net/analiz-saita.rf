@@ -2,6 +2,8 @@ services:
   app:
     build:
       context: .
+    env_file:
+      - .env
     init: true
     volumes:
       - ./shared:/app/shared
