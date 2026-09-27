@@ -12,6 +12,8 @@ import {
   useRouteError,
 } from 'react-router'
 
+const betterlyticsId = import.meta.env.BETTERLYTICS_SITE_ID
+
 export function Layout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
@@ -20,6 +22,14 @@ export function Layout({ children }: { children: ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
+        {betterlyticsId && (
+          <script
+            async
+            src="https://panel.betterlytics.ru/analytics.js"
+            data-site-id={betterlyticsId}
+            data-server-url="https://panel.betterlytics.ru/event"
+          />
+        )}
       </head>
       <body>
         {children}
