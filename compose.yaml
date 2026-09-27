@@ -3,6 +3,8 @@ services:
     build:
       context: .
     init: true
+    volumes:
+      - ./shared:/app/shared
     networks:
       - default
       - external
