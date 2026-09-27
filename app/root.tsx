@@ -1,13 +1,11 @@
-import { useEffect, useRef, type ReactNode } from 'react'
+import type { ReactNode } from 'react'
+import { Layout as SiteLayout } from './components/Layout'
 import {
   Links,
   Meta,
-  NavLink,
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLocation,
-  useNavigationType,
   isRouteErrorResponse,
   useRouteError,
 } from 'react-router'
@@ -32,7 +30,7 @@ export function Layout({ children }: { children: ReactNode }) {
         )}
       </head>
       <body>
-        {children}
+        <SiteLayout>{children}</SiteLayout>
         <ScrollRestoration />
         <Scripts />
       </body>
@@ -40,40 +38,13 @@ export function Layout({ children }: { children: ReactNode }) {
   )
 }
 export default function App() {
-  const { pathname } = useLocation()
-  const action = useNavigationType()
-  const previous = useRef(pathname)
-  useEffect(() => {
-    if (previous.current !== pathname && action !== 'POP') {
-      document
-        .querySelector<HTMLElement>('main h1')
-        ?.focus({ preventScroll: true })
-    }
-    previous.current = pathname
-  }, [pathname, action])
-  return (
-    <>
-      <header>
-        <nav aria-label="Main">
-          <NavLink to="/" end>
-            Home
-          </NavLink>
-          {' | '}
-          <NavLink to="/solutions">Solutions</NavLink>
-          {' | '}
-          <NavLink to="/architecture">Architecture</NavLink>
-        </nav>
-      </header>
-      <main>
-        <Outlet />
-      </main>
-    </>
-  )
+  return <Outlet />
 }
+
 export function ErrorBoundary() {
   const error = useRouteError()
   return (
-    <main>
+    <>
       <h1 tabIndex={-1}>
         {isRouteErrorResponse(error)
           ? `${error.status} ${error.statusText}`
@@ -81,6 +52,6 @@ export function ErrorBoundary() {
       </h1>
       <p>Please reload the page to retry.</p>
       <a href="/">Return home</a>
-    </main>
+    </>
   )
 }

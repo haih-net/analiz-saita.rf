@@ -1,5 +1,6 @@
 import { defineConfig, loadEnv, type Plugin } from 'vite'
 import { reactRouter } from '@react-router/dev/vite'
+import wyw from '@wyw-in-js/vite'
 import { existsSync, readFileSync, statSync } from 'node:fs'
 import { resolve, join } from 'node:path'
 import { lookup } from 'mrmime'
@@ -34,7 +35,7 @@ function serveShared(): Plugin {
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   return {
-    plugins: [reactRouter(), serveShared()],
+    plugins: [wyw({ include: ['**/*.{ts,tsx}'] }), reactRouter(), serveShared()],
     server: { port: 3000, strictPort: true, allowedHosts: ['haih.localhost'] },
     define: {
       'import.meta.env.BETTERLYTICS_SITE_ID': JSON.stringify(

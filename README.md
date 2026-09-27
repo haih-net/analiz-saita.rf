@@ -90,7 +90,8 @@ Browser → Traefik → Vite Dev Server → Source Files
 ```
 app/
   routes/          # Page components with meta exports
-  root.tsx         # Layout, navigation, error boundary
+  components/Layout/ # Shared Header, main content, Footer and basic responsive CSS
+  root.tsx         # HTML document, shared layout integration, error boundary
 server/
   index.ts         # Production static server (compiled to build/node/)
 infra/
@@ -140,3 +141,9 @@ See repository for license details.
 ---
 
 **haih.site** — Requirement-driven development, demonstrated.
+
+## Shared page layout
+
+`app/components/Layout` provides the common Header, main landmark and Footer. The root document wraps route content and error fallbacks with this shell, so navigation stays available on 404 and route-error pages. Internal links use React Router, with active navigation and heading focus after forward navigation. A keyboard skip link targets the main content. The footer follows long content and sits at the bottom of short pages.
+
+The shell uses small mobile-first plain CSS rules without adding a styling dependency; this does not resolve the separate styled-component investigation. Verified with `npm run types`, `npm run build`, focused ESLint, generated HTML inspection, and browser checks through the development proxy at desktop and 360px widths, including navigation, a route rendering error and a missing page.
