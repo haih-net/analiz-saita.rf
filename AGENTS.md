@@ -42,6 +42,10 @@ Use only the minimal semantic pages and components needed to verify the architec
 
 Do not implement all future demonstrations now. The broader Solutions direction includes static delivery, small dynamic features, standalone APIs, persistence, typed applications, authorization, and commerce. These are possible paths, not a mandatory linear stack. Describe unimplemented Solutions honestly as in progress when their pages are introduced.
 
+## Design approach
+
+Use mobile-first responsive design. Start with styles for the smallest supported viewport, then add breakpoints for larger screens. This ensures core content and functionality work on constrained devices before enhancing for desktop.
+
 ## Agreed technology choices
 
 - Node.js: JavaScript execution environment for development/build tooling and the production HTTP service. Do not introduce Bun or a second runtime.
