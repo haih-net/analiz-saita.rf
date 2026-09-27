@@ -31,7 +31,7 @@ module.exports = [
     languageOptions: {
       parserOptions: {
         projectService: {
-          allowDefaultProject: ['.storybook/*.ts', 'server/*.ts'],
+          allowDefaultProject: ['server/*.ts'],
         },
         tsconfigRootDir: __dirname,
         ecmaFeatures: {
