@@ -1,0 +1,11 @@
+http:
+  routers:
+    site:
+      rule: Host(`haih.localhost`) || Host(`localhost`)
+      entryPoints: [web]
+      service: site
+  services:
+    site:
+      loadBalancer:
+        servers:
+          - url: http://cache:80

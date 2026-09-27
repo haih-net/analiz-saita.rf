@@ -1,0 +1,23 @@
+name: haih-site-dev
+services:
+  app:
+    build:
+      context: .
+      target: development
+    init: true
+    volumes:
+      - ./app:/app/app
+      - ./public:/app/public
+      - ./vite.config.ts:/app/vite.config.ts
+      - ./react-router.config.ts:/app/react-router.config.ts
+  proxy:
+    image: traefik:v3.6.1
+    command:
+      - --entrypoints.web.address=:8080
+      - --providers.file.filename=/etc/traefik/routes.yaml
+    ports:
+      - '127.0.0.1:${DEV_PORT:-8087}:8080'
+    volumes:
+      - ./infra/routes.dev.yaml:/etc/traefik/routes.yaml:ro
+    depends_on:
+      - app
