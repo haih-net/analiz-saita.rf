@@ -20,6 +20,11 @@ sub vcl_hash {
 }
 
 sub vcl_backend_response {
+    if (beresp.status != 200) {
+        set beresp.uncacheable = true;
+        set beresp.ttl = 0s;
+        return (deliver);
+    }
     unset beresp.http.Set-Cookie;
     if (bereq.url ~ "\.(js|css|woff2?|ttf|eot|svg|ico|png|jpg|jpeg|gif|webp|avif)(\?.*)?$") {
         set beresp.ttl = 7d;

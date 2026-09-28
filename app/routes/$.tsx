@@ -1,4 +1,5 @@
 import type { MetaFunction } from 'react-router'
+import { data } from 'react-router'
 import { createSeoMeta, unavailableSeoMeta } from '../components/seo/SeoHeaders'
 import type { SeoHandle } from '../components/seo/SeoHeaders'
 export const handle = {
@@ -11,6 +12,9 @@ export const handle = {
 
 export const meta: MetaFunction = ({ error }) =>
   error ? unavailableSeoMeta() : createSeoMeta(handle.seo)
+export const loader = (): ReturnType<typeof data<null>> =>
+  data(null, { status: 404 })
+
 export default function NotFound() {
   return (
     <>
