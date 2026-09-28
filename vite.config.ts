@@ -40,7 +40,7 @@ export default defineConfig(({ mode }) => {
       reactRouter(),
       serveShared(),
     ],
-    server: { port: 3000, strictPort: true, allowedHosts: ['haih.localhost'] },
+    server: { allowedHosts: ['haih.localhost'] },
     define: {
       'import.meta.env.BETTERLYTICS_SITE_ID': JSON.stringify(
         env.BETTERLYTICS_SITE_ID || '',

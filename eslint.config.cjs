@@ -30,9 +30,7 @@ module.exports = [
     },
     languageOptions: {
       parserOptions: {
-        projectService: {
-          allowDefaultProject: ['server/*.ts'],
-        },
+        projectService: true,
         tsconfigRootDir: __dirname,
         ecmaFeatures: {
           jsx: true,

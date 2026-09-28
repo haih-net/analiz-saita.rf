@@ -26,6 +26,7 @@ traefik/
 Static assets (js, css, fonts, images) are cached via Varnish for better performance.
 
 **Routing**: Traefik routes static files to Varnish using `PathRegexp`:
+
 ```yaml
 static:
   rule: 'PathRegexp(`^.*\.(js|css|woff2?|ttf|eot|svg|ico|png|jpg|jpeg|gif|webp|avif)$`)'
@@ -33,6 +34,7 @@ static:
 ```
 
 **Cache features**:
+
 - 7-day TTL for static assets
 - Per-host cache isolation (multi-domain support)
 - Cookies stripped from static requests
@@ -49,11 +51,13 @@ Uses `traefik.yml` by default (HTTP on port 80).
 ### Production
 
 1. Copy example to create production config:
+
    ```bash
    cp traefik.prod.example.yml traefik.prod.yml
    ```
 
 2. Edit `traefik.prod.yml` and set your email for Let's Encrypt:
+
    ```yaml
    certificatesResolvers:
      letsencrypt:
@@ -62,6 +66,7 @@ Uses `traefik.yml` by default (HTTP on port 80).
    ```
 
 3. Create `acme.json` with correct permissions:
+
    ```bash
    touch certs/acme.json
    chmod 600 certs/acme.json
@@ -75,8 +80,8 @@ Uses `traefik.yml` by default (HTTP on port 80).
 
 ## Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `TRAEFIK_STATIC_CONFIG` | `./traefik/traefik.yml` | Path to static Traefik config |
-| `TRAEFIK_DYNAMIC_DIR` | `./traefik/dynamic/local` | Directory with dynamic routing configs |
-| `ACME_EMAIL` | - | Email for Let's Encrypt notifications |
+| Variable                | Default                   | Description                            |
+| ----------------------- | ------------------------- | -------------------------------------- |
+| `TRAEFIK_STATIC_CONFIG` | `./traefik/traefik.yml`   | Path to static Traefik config          |
+| `TRAEFIK_DYNAMIC_DIR`   | `./traefik/dynamic/local` | Directory with dynamic routing configs |
+| `ACME_EMAIL`            | -                         | Email for Let's Encrypt notifications  |

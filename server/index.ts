@@ -1,69 +1,98 @@
-import {
-  createServer,
-  type IncomingMessage,
-  type ServerResponse,
-} from 'node:http'
-import { existsSync, readFileSync } from 'node:fs'
-import { fileURLToPath } from 'node:url'
-import sirv from 'sirv'
+import express from 'express'
+import { createServer } from 'node:http'
+import type { ServerBuild } from 'react-router'
+import type { ViteDevServer } from 'vite'
 
-const root = fileURLToPath(new URL('../client/', import.meta.url))
-const sharedRoot = fileURLToPath(new URL('../../shared/', import.meta.url))
-const fallback = readFileSync(
-  new URL('../client/__spa-fallback.html', import.meta.url),
-)
-const setHeaders = (res: ServerResponse, path: string) => {
-  res.setHeader('X-Content-Type-Options', 'nosniff')
-  res.setHeader(
-    'Cache-Control',
-    /[/\\]assets[/\\]/.test(path)
-      ? 'public, max-age=31536000, immutable'
-      : 'public, max-age=0, s-maxage=60, must-revalidate',
-  )
-}
+import { setupGraphqlMiddleware } from './graphqlMiddleware'
+
 const dev = process.env.NODE_ENV === 'development'
+const port = Number(process.env.PORT || 3000)
 
-const files = sirv(root, {
-  dev,
-  etag: true,
-  gzip: true,
-  brotli: true,
-  setHeaders,
-})
-const shared = existsSync(sharedRoot)
-  ? sirv(sharedRoot, { dev, etag: true, gzip: true, brotli: true, setHeaders })
-  : null
-const server = createServer((req: IncomingMessage, res: ServerResponse) => {
-  if (!['GET', 'HEAD'].includes(req.method ?? '')) {
-    res.writeHead(405, { Allow: 'GET, HEAD', 'Cache-Control': 'no-store' })
-    res.end()
-    return
-  }
-  const notFound = () => {
-    const path = new URL(req.url ?? '/', 'http://localhost').pathname
-    const html =
-      req.headers.accept?.includes('text/html') && !/\.[^/]+$/.test(path)
-    res.writeHead(404, {
-      'Content-Type': html
-        ? 'text/html; charset=utf-8'
-        : 'text/plain; charset=utf-8',
-      'Cache-Control': 'no-store',
-      'X-Content-Type-Options': 'nosniff',
-    })
-    res.end(req.method === 'HEAD' ? undefined : html ? fallback : 'Not found')
-  }
-  files(req, res, () => {
-    if (shared) {
-      shared(req, res, notFound)
-    } else {
-      notFound()
+let stopGraphql: (() => Promise<void>) | null = null
+let vite: ViteDevServer | null = null
+let stopping = false
+
+function setupShutdown(server: ReturnType<typeof createServer>) {
+  const shutdown = async (signal: string) => {
+    if (stopping) {
+      return
     }
-  })
-})
-server.listen(Number(process.env.PORT || 3000), '0.0.0.0')
-for (const signal of ['SIGTERM', 'SIGINT']) {
-  process.on(signal, () => {
+    stopping = true
+    // eslint-disable-next-line no-console
+    console.log(`\n[server] Received ${signal}, shutting down...`)
+
+    if (stopGraphql) {
+      await stopGraphql()
+    }
+
+    if (vite) {
+      await vite.close()
+    }
+
     server.close(() => process.exit(0))
     setTimeout(() => process.exit(0), 5000).unref()
+  }
+
+  process.on('SIGINT', () => shutdown('SIGINT'))
+  process.on('SIGTERM', () => shutdown('SIGTERM'))
+}
+
+async function startServer() {
+  const app = express()
+  app.set('trust proxy', true)
+  app.disable('x-powered-by')
+
+  const httpServer = createServer(app)
+
+  // GraphQL middleware
+  stopGraphql = await setupGraphqlMiddleware(app, httpServer)
+
+  const { createRequestHandler } = await import('@react-router/express')
+
+  if (dev) {
+    // Development: Vite dev server with HMR
+    const { createServer: createVite } = await import('vite')
+    vite = await createVite({
+      server: { middlewareMode: true },
+      appType: 'custom',
+    })
+
+    app.use(vite.middlewares)
+
+    app.all(
+      '/{*splat}',
+      createRequestHandler({
+        build: () => {
+          if (!vite) {
+            throw new Error('Can not create vite')
+          }
+          return vite.ssrLoadModule(
+            'virtual:react-router/server-build',
+          ) as unknown as Promise<ServerBuild>
+        },
+      }),
+    )
+  } else {
+    // Production: serve static files and prebuilt SSR bundle
+    const sirv = (await import('sirv')).default
+    app.use(sirv('build/client', { extensions: [] }))
+
+    // TODO Fix imports
+    const build =
+      // @ts-expect-error prod bundles
+      (await import('build/server/index.js')) as ServerBuild
+    app.all('/{*splat}', createRequestHandler({ build }))
+  }
+
+  setupShutdown(httpServer)
+
+  httpServer.listen(port, '0.0.0.0', () => {
+    // eslint-disable-next-line no-console
+    console.log(`Server ready at http://localhost:${port}`)
   })
 }
+
+startServer().catch((err) => {
+  console.error('Failed to start server:', err)
+  process.exit(1)
+})

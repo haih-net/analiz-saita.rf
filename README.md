@@ -63,15 +63,15 @@ docker compose -f compose.yaml -f compose.prod.yaml up -d
 
 ### Ports
 
-| Mode        | Service           | Default Port | Variable               |
-| ----------- | ----------------- | ------------ | ---------------------- |
-| Local       | Vite/Node.js      | 3000         | `PORT`                 |
-| Docker dev  | Traefik HTTP      | 8080         | `SITE_PORT`            |
-| Docker dev  | Traefik HTTPS     | 8443         | `SITE_PORT_HTTPS`      |
+| Mode        | Service           | Default Port | Variable                 |
+| ----------- | ----------------- | ------------ | ------------------------ |
+| Local       | Vite/Node.js      | 3000         | `PORT`                   |
+| Docker dev  | Traefik HTTP      | 8080         | `SITE_PORT`              |
+| Docker dev  | Traefik HTTPS     | 8443         | `SITE_PORT_HTTPS`        |
 | Docker dev  | Traefik Dashboard | 8088         | `TRAEFIK_DASHBOARD_PORT` |
-| Docker dev  | App direct        | 3001         | `APP_PORT`             |
-| Docker prod | Traefik HTTP      | 80           | `SITE_PORT`            |
-| Docker prod | Traefik HTTPS     | 443          | `SITE_PORT_HTTPS`      |
+| Docker dev  | App direct        | 3001         | `APP_PORT`               |
+| Docker prod | Traefik HTTP      | 80           | `SITE_PORT`              |
+| Docker prod | Traefik HTTPS     | 443          | `SITE_PORT_HTTPS`        |
 
 External network: `NETWORK_NAME` (required for Docker)
 

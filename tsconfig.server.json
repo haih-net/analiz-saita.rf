@@ -3,9 +3,9 @@
   "include": ["server/**/*"],
   "compilerOptions": {
     "types": ["node"],
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "node16",
+    "moduleResolution": "node16",
     "outDir": "build/node",
-    "rootDir": "server"
+    "noEmit": false
   }
 }
