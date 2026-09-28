@@ -6,7 +6,7 @@ import { resolve, join } from 'node:path'
 import { lookup } from 'mrmime'
 
 function serveShared(): Plugin {
-  const sharedDir = resolve(__dirname, 'shared')
+  const sharedDir = resolve(import.meta.dirname, 'shared')
   return {
     name: 'serve-shared',
     configureServer(server) {
