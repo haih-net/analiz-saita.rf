@@ -9,6 +9,7 @@ EXPOSE 3000
 CMD ["npm", "run", "dev"]
 
 FROM development AS build
+ENV NODE_OPTIONS="--dns-result-order=ipv4first"
 RUN npm run types && npm run build
 
 FROM node:22.22.3-bookworm-slim AS production
