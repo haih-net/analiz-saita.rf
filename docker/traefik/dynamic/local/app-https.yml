@@ -1,0 +1,22 @@
+tls:
+  certificates:
+    - certFile: /etc/traefik/certs/localhost.crt
+      keyFile: /etc/traefik/certs/localhost.key
+
+http:
+  routers:
+    app-https:
+      rule: 'PathPrefix(`/`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - compress
+      service: varnish
+      priority: 1
+      tls: {}
+
+  services:
+    varnish:
+      loadBalancer:
+        servers:
+          - url: 'http://varnish:80'

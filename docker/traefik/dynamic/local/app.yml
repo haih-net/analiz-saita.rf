@@ -1,0 +1,27 @@
+http:
+  routers:
+    app:
+      rule: 'PathPrefix(`/`)'
+      entryPoints:
+        - web
+      middlewares:
+        - compress
+      service: varnish
+      priority: 1
+
+  middlewares:
+    compress:
+      compress:
+        excludedContentTypes:
+          - text/event-stream
+
+  services:
+    app:
+      loadBalancer:
+        servers:
+          - url: 'http://app:3000'
+
+    varnish:
+      loadBalancer:
+        servers:
+          - url: 'http://varnish:80'

@@ -1,0 +1,46 @@
+services:
+  app:
+    build:
+      context: ../
+    env_file:
+      - .env
+    init: true
+    volumes:
+      - ../shared:/app/shared
+    networks:
+      - default
+      - external
+  traefik:
+    image: traefik:v3.6.1
+    volumes:
+      - ${TRAEFIK_STATIC_CONFIG:-./traefik/traefik.yml}:/etc/traefik/traefik.yml:ro
+      - ${TRAEFIK_DYNAMIC_DIR:-./traefik/dynamic/local}:/etc/traefik/dynamic:ro
+      - ./traefik/logs:/var/log/traefik
+      - ./traefik/certs:/etc/traefik/certs
+    networks:
+      - default
+      - external
+    labels:
+      - 'traefik.enable=true'
+
+  varnish:
+    image: varnish:7.7.3
+    volumes:
+      - ./varnish/default.vcl:/etc/varnish/default.vcl:ro
+      - varnish-cache:/var/lib/varnish
+    command: >-
+      -s ${VARNISH_STORAGE:-file,/var/lib/varnish/cache,256M}
+    expose:
+      - '80'
+    depends_on:
+      - app
+    networks:
+      - default
+      - external
+
+volumes:
+  varnish-cache:
+networks:
+  external:
+    name: ${NETWORK_NAME}
+    external: true

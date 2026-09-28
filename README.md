@@ -46,24 +46,32 @@ npm start
 ## Docker
 
 ```bash
+cd docker
+
 # Development
 docker compose -f compose.yaml -f compose.dev.yaml up -d
-# → http://127.0.0.1:8087 (Traefik)
+# → http://127.0.0.1:8080 (Traefik HTTP)
+# → http://127.0.0.1:8443 (Traefik HTTPS)
+# → http://127.0.0.1:8088 (Traefik Dashboard)
 # → http://127.0.0.1:3001 (App direct)
 
 # Production
 docker compose -f compose.yaml -f compose.prod.yaml up -d
-# → http://127.0.0.1:8088 (Traefik → Varnish → Node.js)
+# → http://127.0.0.1:80 (Traefik → Varnish → Node.js)
+# → https://127.0.0.1:443
 ```
 
 ### Ports
 
-| Mode        | Service      | Default Port | Variable    |
-| ----------- | ------------ | ------------ | ----------- |
-| Local       | Vite/Node.js | 3000         | `PORT`      |
-| Docker dev  | Traefik      | 8087         | `SITE_PORT` |
-| Docker dev  | App direct   | 3001         | `APP_PORT`  |
-| Docker prod | Traefik      | 8088         | `SITE_PORT` |
+| Mode        | Service           | Default Port | Variable               |
+| ----------- | ----------------- | ------------ | ---------------------- |
+| Local       | Vite/Node.js      | 3000         | `PORT`                 |
+| Docker dev  | Traefik HTTP      | 8080         | `SITE_PORT`            |
+| Docker dev  | Traefik HTTPS     | 8443         | `SITE_PORT_HTTPS`      |
+| Docker dev  | Traefik Dashboard | 8088         | `TRAEFIK_DASHBOARD_PORT` |
+| Docker dev  | App direct        | 3001         | `APP_PORT`             |
+| Docker prod | Traefik HTTP      | 80           | `SITE_PORT`            |
+| Docker prod | Traefik HTTPS     | 443          | `SITE_PORT_HTTPS`      |
 
 External network: `NETWORK_NAME` (required for Docker)
 
@@ -89,14 +97,20 @@ Browser → Traefik → Vite Dev Server → Source Files
 
 ```
 app/
-  routes/          # Page components with meta exports
+  routes/            # Page components with meta exports
   components/Layout/ # Shared Header, main content, Footer and basic responsive CSS
-  root.tsx         # HTML document, shared layout integration, error boundary
+  root.tsx           # HTML document, shared layout integration, error boundary
 server/
-  index.ts         # Production static server (compiled to build/node/)
-infra/
-  default.vcl      # Varnish cache configuration
-  routes.*.yaml    # Traefik routing rules
+  index.ts           # Production static server (compiled to build/node/)
+docker/
+  compose.yaml       # Base Docker Compose configuration
+  compose.dev.yaml   # Development overrides
+  compose.prod.yaml  # Production overrides
+  traefik/           # Traefik configuration, certs, logs
+    traefik.yml      # Static config (entrypoints, providers)
+    dynamic/local/   # Dynamic routing rules
+  varnish/
+    default.vcl      # Varnish cache configuration
 ```
 
 ## Development

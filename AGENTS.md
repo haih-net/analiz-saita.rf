@@ -49,6 +49,7 @@ Use mobile-first responsive design. Start with styles for the smallest supported
 - `app/pages/<Page>/` owns page rendering, child sections, page-specific data and assets. Keep assets beside their owning page or section.
 - `app/components/` contains reusable components and shared infrastructure such as Layout and SEO. These modules must not import pages or page-specific assets.
 - `app/routes/` contains thin React Router modules: route metadata, integration exports, and the page entry point. Group related routes in directories such as `app/routes/blog/`.
+- `docker/` contains Docker Compose files and service configurations. `docker/traefik/` holds Traefik static config, dynamic routing rules, certs and logs. `docker/varnish/` holds Varnish VCL configuration.
 - Pass page-specific choices through typed parameters. In particular, SEO images (source, alternative text, width and height) are chosen by the route/page and passed to `createSeoMeta`; the generic SEO implementation must not choose or import a homepage image. If no image is supplied, omit image tags.
 - Data-only modules must not load styles as side effects. Import a styled component in the view that renders it.
 - Preserve the owner's in-progress moves and deletions. Read the current tree before editing; do not restore an old folder structure or deleted demonstration route. Update imports, prerender lists, sitemap entries and checks together when routes move or disappear.

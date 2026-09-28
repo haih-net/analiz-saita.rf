@@ -1,0 +1,15 @@
+name: haih-site
+services:
+  app:
+    restart: unless-stopped
+    build:
+      target: production
+
+  traefik:
+    restart: unless-stopped
+    ports:
+      - '${SITE_PORT:-80}:80'
+      - '${SITE_PORT_HTTPS:-443}:443'
+
+  varnish:
+    restart: unless-stopped
