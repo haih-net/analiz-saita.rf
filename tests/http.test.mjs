@@ -4,9 +4,8 @@ import assert from 'node:assert/strict'
 const base = process.env.TEST_URL || 'http://localhost:8088'
 test('prerendered routes expose content and metadata', async () => {
   for (const [path, title] of [
-    ['/', 'HAIH — architecture foundation'],
-    ['/solutions', 'Solutions — HAIH'],
-    ['/architecture', 'Architecture — HAIH'],
+    ['/', 'HAIH — Building websites with AI, from requirements'],
+    ['/solutions', 'Technology choices and their trade-offs — HAIH Solutions'],
   ]) {
     const response = await fetch(base + path)
     assert.equal(response.status, 200)

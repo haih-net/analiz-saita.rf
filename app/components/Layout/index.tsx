@@ -2,7 +2,7 @@ import { useEffect, useRef, type ReactNode } from 'react'
 import { useLocation, useNavigationType } from 'react-router'
 import { Header } from './Header'
 import { Footer } from './Footer'
-import './layout.css'
+import { LayoutStyled } from './styles'
 
 export function Layout({ children }: { children: ReactNode }) {
   const { pathname } = useLocation()
@@ -19,7 +19,7 @@ export function Layout({ children }: { children: ReactNode }) {
   }, [pathname, action])
 
   return (
-    <div className="site-layout">
+    <LayoutStyled>
       <a className="skip-link" href="#main-content">
         Skip to content
       </a>
@@ -32,6 +32,6 @@ export function Layout({ children }: { children: ReactNode }) {
         {children}
       </main>
       <Footer />
-    </div>
+    </LayoutStyled>
   )
 }

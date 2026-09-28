@@ -9,7 +9,9 @@
     "dev": "react-router dev --host 0.0.0.0",
     "build": "react-router build && tsc -p tsconfig.server.json",
     "clean": "node -e \"fs.rmSync('build',{recursive:true,force:true});fs.rmSync('.react-router',{recursive:true,force:true})\"",
-    "types": "react-router typegen && tsc --noEmit",
+    "router:gen": "react-router typegen",
+    "types": "npm run router:gen && tsc --noEmit",
+    "types:watch": "npm run router:gen && tsc --noEmit --watch",
     "start": "node build/node/index.js",
     "test": "node --test tests/http.test.mjs",
     "lint": "eslint .",
@@ -17,7 +19,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "storybook": "storybook dev -p 6006",
-    "storybook:build": "storybook build"
+    "storybook:build": "storybook build",
+    "test:seo": "node --experimental-strip-types --test tests/seo.test.mjs"
   },
   "dependencies": {
     "@linaria/core": "^8.2.0",

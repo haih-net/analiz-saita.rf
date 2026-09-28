@@ -36,9 +36,7 @@ Lead visitor-facing explanations with needs and benefits. Reveal requirements, l
 
 ## Current scope
 
-Establish the website's development and production-build workflow, without visual design work.
-
-Use only the minimal semantic pages and components needed to verify the architecture. Do not spend this phase on branding, polished layouts, generated imagery, marketing copy expansion, or a large component library.
+Maintain the website's development and production-build workflow. The current site also includes an illustrated homepage, Solutions, and an individually designed blog. Implement the owner's requested page work without introducing a large component library or expanding scope speculatively.
 
 Do not implement all future demonstrations now. The broader Solutions direction includes static delivery, small dynamic features, standalone APIs, persistence, typed applications, authorization, and commerce. These are possible paths, not a mandatory linear stack. Describe unimplemented Solutions honestly as in progress when their pages are introduced.
 
@@ -46,12 +44,38 @@ Do not implement all future demonstrations now. The broader Solutions direction 
 
 Use mobile-first responsive design. Start with styles for the smallest supported viewport, then add breakpoints for larger screens. This ensures core content and functionality work on constrained devices before enhancing for desktop.
 
+## Source structure and dependency boundaries
+
+- `app/pages/<Page>/` owns page rendering, child sections, page-specific data and assets. Keep assets beside their owning page or section.
+- `app/components/` contains reusable components and shared infrastructure such as Layout and SEO. These modules must not import pages or page-specific assets.
+- `app/routes/` contains thin React Router modules: route metadata, integration exports, and the page entry point. Group related routes in directories such as `app/routes/blog/`.
+- Pass page-specific choices through typed parameters. In particular, SEO images (source, alternative text, width and height) are chosen by the route/page and passed to `createSeoMeta`; the generic SEO implementation must not choose or import a homepage image. If no image is supplied, omit image tags.
+- Data-only modules must not load styles as side effects. Import a styled component in the view that renders it.
+- Preserve the owner's in-progress moves and deletions. Read the current tree before editing; do not restore an old folder structure or deleted demonstration route. Update imports, prerender lists, sitemap entries and checks together when routes move or disappear.
+
+## Styling
+
+Use Linaria `styled` components from `@linaria/react`, exported from colocated `styles.ts` files. Render those components as the page/component wrappers; see `app/pages/MainPage/styles.ts` and its consuming `index.tsx`.
+
+Do not import standalone `.css` files or replace this convention with CSS Modules. Named TypeScript imports make missing style exports and module paths visible to tooling; this does not mean TypeScript validates all CSS declarations or nested class selectors. Keep selectors scoped beneath the owning styled wrapper. Preserve semantic elements when wrapping content, including `article`, `main` and the document shell. Reuse exported styled components as selectors where component relationships require it.
+
+Keep mobile-first rules and verify that the production build extracts the styles and links the resulting CSS. Do not claim HMR, dynamic-style or hydration behavior has been verified merely because type checking passes.
+
+## Coding conventions
+
+- Do not use `export default`. Use named exports only.
+- Do not use barrel exports in `index.ts`/`index.tsx` files. Each module exports its own declarations directly.
+- Declare React components using `React.FC`, not plain function declarations.
+- Ensure maximum type coverage. Explicitly type exported constants, function parameters, return values, and data structures. Avoid `any` and untyped object literals.
+
 ## Agreed technology choices
 
 - Node.js: JavaScript execution environment for development/build tooling and the production HTTP service. Do not introduce Bun or a second runtime.
 - React: reusable components, typed props, and interactive UI.
 - TypeScript: check component and integration contracts.
 - Vite: development server, HMR, asset builds, code splitting, and lazy-loaded modules. Vite alone is not a router or an HTML prerendering system.
+- React Router: current routing, prerendering and head integration.
+- Linaria: current component styling and build-time CSS extraction.
 - Traefik: the external entry point for TLS and routing in development and production.
 - Varnish: production HTTP caching.
 - Docker Compose: reproducible service environments.
@@ -81,13 +105,11 @@ Request-time SSR is not currently required. Build-time server rendering does not
 
 ## Open decisions
 
-Select and verify an integration for React routing, prerendering, hydration, and Head management. Prefer a coherent maintained solution over assembling a custom framework. No such integration has been approved yet; Astro and other earlier suggestions are not agreed choices.
+Continue verifying the existing React Router integration for navigation, prerendering, hydration and Head management. Do not replace it or introduce a custom framework without a concrete need.
 
 Choose the production Node.js file-serving implementation and its routing/error behavior.
 
-Investigate styling only to the extent needed by this phase. The concrete desired capability is referencing one styled component as a selector inside another component's styles, while extracting CSS during the build. Linaria is a candidate, not a decision. CSS Modules are not an approved substitute merely because they have fewer dependencies. Verify cross-file references, dynamic values, hydration, HMR, and lazy CSS delivery before adopting a solution broadly.
-
-Do not use a styling investigation as a reason to design the website in this phase.
+Linaria is the selected styling convention. Focused verification of cross-file references, dynamic values, hydration, HMR and lazy CSS delivery remains necessary as those capabilities are used.
 
 ## Environments
 
@@ -95,7 +117,7 @@ Development request path:
 
     Browser -> Traefik -> Vite development server -> source files
 
-Bypass Varnish for normal development. Ensure the HMR connection works through Traefik. Use hot updates where supported and automatic reloads where necessary.
+Direct development access bypasses Varnish. Development may also intentionally run through Varnish to investigate caching; do not diagnose that arrangement as a configuration error by itself. Choose the appropriate endpoint for each check. Ensure the HMR connection works through Traefik. Use hot updates where supported and automatic reloads where necessary.
 
 Production request path:
 

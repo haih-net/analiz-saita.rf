@@ -1,8 +1,11 @@
+import { HtmlStyled } from './components/Layout/styles'
+import { SeoHeaders, unavailableSeoMeta } from './components/seo/SeoHeaders'
+
+export const meta = unavailableSeoMeta
 import type { ReactNode } from 'react'
 import { Layout as SiteLayout } from './components/Layout'
 import {
   Links,
-  Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
@@ -14,12 +17,12 @@ const betterlyticsId = import.meta.env.BETTERLYTICS_SITE_ID
 
 export function Layout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <HtmlStyled lang="en">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
-        <Meta />
+        <SeoHeaders />
         <Links />
         {betterlyticsId && (
           <script
@@ -35,7 +38,7 @@ export function Layout({ children }: { children: ReactNode }) {
         <ScrollRestoration />
         <Scripts />
       </body>
-    </html>
+    </HtmlStyled>
   )
 }
 export default function App() {

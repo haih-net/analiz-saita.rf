@@ -3,16 +3,16 @@ import { RequestEvidence } from './RequestEvidence'
 import { TechnologyMap } from './TechnologyMap'
 import { Roadmap } from './Roadmap'
 import { ExperimentOutcomes } from './ExperimentOutcomes'
-import './styles.css'
+import { MainPageStyled } from './styles'
 
 export default function MainPage() {
   return (
-    <div className="main-page">
+    <MainPageStyled>
       <Hero />
       <RequestEvidence />
       <TechnologyMap />
       <Roadmap />
       <ExperimentOutcomes />
-    </div>
+    </MainPageStyled>
   )
 }

@@ -79,6 +79,45 @@ module.exports = [
     },
   },
   {
+    files: ['app/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['**/*.css', '*.css'],
+              message:
+                'Import a named Linaria styled component from styles.ts instead of a CSS side effect.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['app/components/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['**/*.css', '*.css'],
+              message:
+                'Import a named Linaria styled component from styles.ts instead of a CSS side effect.',
+            },
+            {
+              group: ['**/pages/**'],
+              message:
+                'Shared components must not depend on pages. Pass page-specific data and assets through typed parameters.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     files: ['**/*.{js,cjs,mjs}'],
     languageOptions: {
       parserOptions: {

@@ -70,11 +70,11 @@ export const layers: SolutionLayer[] = [
               {
                 id: 'linaria',
                 name: 'Linaria + WyW Vite plugin',
-                status: 'Connected; verification in progress',
+                status: 'In use; focused verification continues',
                 provides:
                   'Styled-component references inside selectors while extracting CSS during the build. This styling requirement exists now, which is why Linaria was introduced now.',
                 dependsOn:
-                  'The Vite transform and statically extractable styles. Cross-file selectors, dynamic values, HMR, hydration and lazy CSS still need focused verification. Existing plain CSS has not all been migrated; fewer dependencies alone would not make CSS Modules an equivalent substitute.',
+                  'The Vite transform and statically extractable styles. Page and layout wrappers use Linaria styled components with CSS extracted during the build. Cross-file selectors, dynamic values, HMR, hydration and lazy CSS delivery still need focused verification; fewer dependencies alone would not make CSS Modules an equivalent substitute.',
               },
             ],
           },
