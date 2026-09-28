@@ -8,7 +8,9 @@ export function Footer() {
           HAIH
         </Link>
         <p>Requirements. Experiments. Evidence.</p>
-        <a href="https://github.com/haih-net/haih.site">Explore the code</a>
+        <a target="_blank" href="https://fi1osof.ru">
+          Technical architecture and development by 𝕱
+        </a>
       </div>
     </footer>
   )
