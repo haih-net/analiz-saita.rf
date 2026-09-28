@@ -13,23 +13,39 @@ export default function BlogPage() {
           record of what we think now, with a revision to return to later.
         </p>
       </header>
-      {posts.map((post) => (
+      {posts.map((post, index) => (
         <article className="journal-card" key={post.path}>
-          <p className="journal-kicker">
-            01 / Field notes ·{' '}
-            <time dateTime={post.date}>{post.dateLabel}</time>
-          </p>
-          <h2>
-            <Link to={post.path}>{post.title}</Link>
-          </h2>
-          <p>{post.description}</p>
-          <p className="journal-revision">
-            Project snapshot: {post.version} ·{' '}
-            <a href={post.commitUrl}>{post.commit.slice(0, 7)}</a>
-          </p>
-          <Link to={post.path}>
-            Read the observation <span aria-hidden="true">↗</span>
+          <Link
+            to={post.path}
+            className="journal-cover"
+            aria-label={`Read ${post.title}`}
+          >
+            <img
+              src={post.image.src}
+              alt={post.image.alt}
+              width={post.image.width}
+              height={post.image.height}
+              loading={index === 0 ? 'eager' : 'lazy'}
+              decoding="async"
+            />
           </Link>
+          <div className="journal-card-copy">
+            <p className="journal-kicker">
+              {String(posts.length - index).padStart(2, '0')} / Field notes ·{' '}
+              <time dateTime={post.date}>{post.dateLabel}</time>
+            </p>
+            <h2>
+              <Link to={post.path}>{post.title}</Link>
+            </h2>
+            <p>{post.description}</p>
+            <p className="journal-revision">
+              Project snapshot: {post.version} ·{' '}
+              <a href={post.commitUrl}>{post.commit.slice(0, 7)}</a>
+            </p>
+            <Link to={post.path}>
+              Read the observation <span aria-hidden="true">↗</span>
+            </Link>
+          </div>
         </article>
       ))}
     </BlogStyled>

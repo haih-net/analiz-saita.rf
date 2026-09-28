@@ -7,6 +7,7 @@ export type Post = {
   version: string
   commit: string
   commitUrl: string
+  image: PostSeo['image']
 }
 
 export type PostSeo = {

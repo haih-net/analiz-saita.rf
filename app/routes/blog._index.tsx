@@ -2,7 +2,7 @@ import type { MetaFunction } from 'react-router'
 import { createSeoMeta, unavailableSeoMeta } from '../components/seo/SeoHeaders'
 import type { SeoHandle } from '../components/seo/SeoHeaders'
 import { posts } from '../pages/Blog'
-import { post1Seo } from '../pages/Blog/posts/Post1'
+import { post1Seo } from '../pages/Blog/posts/Post1/data'
 
 export const handle = {
   seo: {

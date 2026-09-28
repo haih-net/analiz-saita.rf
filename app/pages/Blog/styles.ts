@@ -34,9 +34,34 @@ export const BlogStyled = styled.div`
     color: #536789;
   }
   .journal-card {
+    display: grid;
+    gap: 1.5rem;
     border-top: 3px solid #0052cc;
     padding-block: 1.5rem 3rem;
-    max-width: 48rem;
+    max-width: 72rem;
+  }
+  .journal-cover {
+    display: block;
+    align-self: start;
+    overflow: hidden;
+    background: #f5f7fa;
+  }
+  .journal-cover img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+  }
+  .journal-cover:focus-visible {
+    outline: 3px solid #0052cc;
+    outline-offset: 4px;
+  }
+  .journal-card-copy {
+    min-width: 0;
+  }
+  .journal-card-copy > .journal-kicker {
+    margin-top: 0;
   }
   .journal-card h2 a {
     text-decoration: none;
@@ -145,6 +170,10 @@ export const BlogStyled = styled.div`
     font-size: 0.85rem;
   }
   @media (min-width: 48rem) {
+    .journal-card {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: 2rem;
+    }
     .field-note-header {
       padding-top: 1rem;
     }

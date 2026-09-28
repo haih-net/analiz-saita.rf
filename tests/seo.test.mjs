@@ -9,6 +9,7 @@ const paths = [
   '/solutions',
   '/blog',
   '/blog/a-small-site-and-the-limits-we-found',
+  '/blog/one-server-two-modes-and-an-api',
 ]
 const read = (path) =>
   readFileSync(
@@ -140,39 +141,58 @@ test('solutions collection points at real visible sections, preserving fragment 
   }
 })
 
-test('article connects visible author, ORCID, image, breadcrumbs and frozen revision', () => {
-  const html = read(paths.at(-1))
-  const graph = graphOf(headOf(html))
-  const article = graph.find((node) => node['@type'] === 'BlogPosting')
-  const person = graph.find((node) => node['@type'] === 'Person')
-  assert.equal(person['@id'], 'https://fi1osof.ru/about')
-  assert.ok(person.sameAs.includes('https://orcid.org/0009-0007-9285-0801'))
-  assert.equal(article.author['@id'], person['@id'])
-  assert.equal(article.isPartOf['@id'], 'https://haih.site/blog#blog')
-  assert.ok(html.includes(author.name))
-  assert.ok(html.includes('>ORCID</a>'))
-  assert.equal(article.about.version, 'v0.1.0-1-gccf201e')
-  assert.equal(
-    article.citation,
-    'https://github.com/haih-net/haih.site/commit/ccf201ec57dcf867e11c2f389ebfd0875a72b8a6',
-  )
-  assert.equal(article.datePublished, '2026-09-28')
-  assert.equal(article.dateModified, undefined)
-  const imagePath = new URL(article.image.url).pathname
-  assert.ok(imagePath.startsWith('/assets/'))
-  assert.ok(existsSync(new URL(`../build/client${imagePath}`, import.meta.url)))
-  assert.equal(
-    graph.find((node) => node['@type'] === 'BreadcrumbList').itemListElement
-      .length,
-    3,
-  )
-})
+for (const [path, version, commit] of [
+  [
+    '/blog/a-small-site-and-the-limits-we-found',
+    'v0.1.0-1-gccf201e',
+    'ccf201ec57dcf867e11c2f389ebfd0875a72b8a6',
+  ],
+  [
+    '/blog/one-server-two-modes-and-an-api',
+    'v0.2.0',
+    'a83f4993e06c287a0e4e7639ef2b6521d60b3232',
+  ],
+]) {
+  test(`${path} connects author, image and frozen revision`, () => {
+    const html = read(path)
+    const graph = graphOf(headOf(html))
+    const article = graph.find((node) => node['@type'] === 'BlogPosting')
+    const person = graph.find((node) => node['@type'] === 'Person')
+    assert.equal(person['@id'], 'https://fi1osof.ru/about')
+    assert.ok(person.sameAs.includes('https://orcid.org/0009-0007-9285-0801'))
+    assert.equal(article.author['@id'], person['@id'])
+    assert.equal(article.isPartOf['@id'], 'https://haih.site/blog#blog')
+    assert.ok(html.includes(author.name))
+    assert.ok(html.includes('>ORCID</a>'))
+    assert.equal(article.about.version, version)
+    assert.equal(
+      article.citation,
+      `https://github.com/haih-net/haih.site/commit/${commit}`,
+    )
+    assert.equal(article.datePublished, '2026-09-28')
+    assert.equal(article.dateModified, undefined)
+    const imagePath = new URL(article.image.url).pathname
+    assert.ok(imagePath.startsWith('/assets/'))
+    assert.ok(
+      existsSync(new URL(`../build/client${imagePath}`, import.meta.url)),
+    )
+    assert.equal(
+      graph.find((node) => node['@type'] === 'BreadcrumbList').itemListElement
+        .length,
+      3,
+    )
+  })
+}
 
-test('unknown-route fallback is noindex without a fabricated canonical or article', () => {
-  const html = readFileSync(
-    new URL('../build/client/__spa-fallback.html', import.meta.url),
-    'utf8',
-  )
+test('unknown SSR route is 404 and noindex without a fabricated canonical or article', async () => {
+  const { createRequestHandler } = await import('react-router')
+  const build = await import('../build/server/index.js')
+  const response = await createRequestHandler(
+    build,
+    'production',
+  )(new Request('https://haih.site/missing-seo-page'))
+  assert.equal(response.status, 404)
+  const html = await response.text()
   const head = headOf(html)
   assert.ok(head.includes('noindex'))
   assert.ok(!head.includes('rel="canonical"'))
