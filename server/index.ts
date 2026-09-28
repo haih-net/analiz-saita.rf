@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url'
 import sirv from 'sirv'
 
 const root = fileURLToPath(new URL('../client/', import.meta.url))
-const sharedRoot = fileURLToPath(new URL('../shared/', import.meta.url))
+const sharedRoot = fileURLToPath(new URL('../../shared/', import.meta.url))
 const fallback = readFileSync(
   new URL('../client/__spa-fallback.html', import.meta.url),
 )
@@ -21,9 +21,17 @@ const setHeaders = (res: ServerResponse, path: string) => {
       : 'public, max-age=0, s-maxage=60, must-revalidate',
   )
 }
-const files = sirv(root, { etag: true, gzip: true, brotli: true, setHeaders })
+const dev = process.env.NODE_ENV === 'development'
+
+const files = sirv(root, {
+  dev,
+  etag: true,
+  gzip: true,
+  brotli: true,
+  setHeaders,
+})
 const shared = existsSync(sharedRoot)
-  ? sirv(sharedRoot, { etag: true, gzip: true, brotli: true, setHeaders })
+  ? sirv(sharedRoot, { dev, etag: true, gzip: true, brotli: true, setHeaders })
   : null
 const server = createServer((req: IncomingMessage, res: ServerResponse) => {
   if (!['GET', 'HEAD'].includes(req.method ?? '')) {
