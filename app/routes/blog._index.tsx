@@ -1,11 +1,8 @@
 import type { MetaFunction } from 'react-router'
-import {
-  createSeoMeta,
-  unavailableSeoMeta,
-} from '../../components/seo/SeoHeaders'
-import type { SeoHandle } from '../../components/seo/SeoHeaders'
-import { posts } from '../../pages/Blog'
-import { post1Seo } from '../../pages/Blog/posts/Post1'
+import { createSeoMeta, unavailableSeoMeta } from '../components/seo/SeoHeaders'
+import type { SeoHandle } from '../components/seo/SeoHeaders'
+import { posts } from '../pages/Blog'
+import { post1Seo } from '../pages/Blog/posts/Post1'
 
 export const handle = {
   seo: {
@@ -25,4 +22,4 @@ export const handle = {
 export const meta: MetaFunction = ({ error }) =>
   error ? unavailableSeoMeta() : createSeoMeta(handle.seo)
 
-export { default } from '../../pages/Blog/BlogPage'
+export { default } from '../pages/Blog/BlogPage'
