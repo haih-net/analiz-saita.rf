@@ -1,6 +1,6 @@
 # Second blog post illustrations
 
-Generated with the built-in ImageGen tool. Both images are 1536 × 1024 PNG conceptual editorial illustrations, not technical diagrams or measurements. Used beside the owning article; the second image is lazy-loaded.
+Generated with the built-in ImageGen tool. Both images are 1536 × 1024 PNG conceptual editorial illustrations, not technical diagrams or measurements. The current frontend uses responsive WebP derivatives; the second image is lazy-loaded.
 
 ## runtime.png — final prompt
 
@@ -9,3 +9,7 @@ Use case: illustration-story. Asset type: engineering blog cover, landscape 1536
 ## stale-cache.png — final prompt
 
 Use case: illustration-story. Asset type: second editorial illustration for an engineering blog, landscape 1536x1024. A witty miniature paper sculpture still life about a cache machine that has not read the new instructions. White tabletop and warm white seamless studio backdrop. A compact charming ultramarine blue paper-card dispensing machine, with neat mechanical rollers and a small brass crank, is busily dispensing a long orderly row of identical faded blue cards each with the same simple geometric page layout. Beside the machine is a single fresh coral-colored instruction card propped up on a tiny stand, clearly waiting to be inserted into an empty slot. A little coral maintenance ladder leans against the machine, as if the update is waiting for attention. Tactile layered paper and matte painted metal, crisp soft shadows, sophisticated playful magazine photography, restrained ultramarine and coral accents, coherent crafted miniature, ample whitespace. No people, no text, no letters, no numbers, no logos, no watermark. Conceptual metaphor, not a real screenshot or technical diagram.
+
+## Delivery optimization — 30 September 2026
+
+PNG originals and prompts are preserved. The page uses 1440 × 960 and 600 × 400 WebP variants, quality 82, generated with global Sharp through `node scripts/optimize-images.mjs` from the project root. `srcSet` and `sizes` let the browser select the appropriate resource for article, card, viewport, and pixel density. Original PNGs are not imported into the production build.

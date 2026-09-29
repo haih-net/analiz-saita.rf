@@ -9,3 +9,9 @@ Headings, calls to action and explanatory captions remain HTML. The hero loads e
 Historical checks before the page-folder and Linaria refactor: TypeScript, production build, focused ESLint, desktop and 360px browser layouts, all eight image loads, roadmap anchor, architecture navigation and browser back. No horizontal overflow was observed at 360px. No production deployment was performed.
 
 After the refactor, type checking, linting, production extraction and generated HTML stylesheet links were checked. Browser layout and HMR were not rechecked.
+
+## Image delivery — 30 September 2026
+
+Measured at localhost:3000: the hero occupies about 616 CSS pixels, evidence panels 532 pixels, full-width figures 1088 pixels, and outcome icons 88 pixels. Optimized with the globally installed Sharp (`node scripts/optimize-images.mjs` from the repository root): WebP quality 82, effort 6, no enlargement. Hero: 1200 × 800; evidence panels: 1080 × 720; full-width figures and blog illustrations: 1440 × 960; outcome icons: 176 × 176. Large illustrations also have a 600 × 400 variant selected through `srcSet` and layout-specific `sizes`. PNG sources remain alongside their derivatives, but are not imported by the application or included in the asset build.
+
+Across 14 illustrations, previously imported images totalled approximately 14.66 MB. All new WebP variants together total 0.875 MB (94.0% less); the browser chooses a variant rather than downloading every size. This is an asset-size comparison, not a page-speed measurement. Historical figures in the first two field notes describe their fixed project snapshots and remain unchanged.

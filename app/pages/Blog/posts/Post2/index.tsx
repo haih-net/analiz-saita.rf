@@ -1,9 +1,11 @@
+import staleCacheSmall from './assets/stale-cache-small.webp'
+import runtimeSmall from './assets/runtime-small.webp'
 import { Link } from 'react-router'
 import { author } from '../../../../components/seo/site'
 import { post2 as post } from './data'
 import { RuntimePostStyled } from './styles'
-import runtime from './assets/runtime.png'
-import staleCache from './assets/stale-cache.png'
+import runtime from './assets/runtime.webp'
+import staleCache from './assets/stale-cache.webp'
 
 export const Post2: React.FC = () => (
   <RuntimePostStyled as="article" className="field-note">
@@ -58,8 +60,10 @@ export const Post2: React.FC = () => (
     <figure className="field-note-cover">
       <img
         src={runtime}
-        width={1536}
-        height={1024}
+        srcSet={`${runtimeSmall} 600w, ${runtime} 1440w`}
+        sizes="(min-width: 72rem) 1088px, (min-width: 48rem) calc(100vw - 64px), calc(100vw - 32px)"
+        width={1440}
+        height={960}
         fetchPriority="high"
         alt="A miniature paper website pavilion opened to reveal a blue engine with brass gears and a coral flywheel."
       />
@@ -193,8 +197,10 @@ export const Post2: React.FC = () => (
     <figure>
       <img
         src={staleCache}
-        width={1536}
-        height={1024}
+        srcSet={`${staleCacheSmall} 600w, ${staleCache} 1440w`}
+        sizes="(min-width: 72rem) 1088px, (min-width: 48rem) calc(100vw - 64px), calc(100vw - 32px)"
+        width={1440}
+        height={960}
         loading="lazy"
         decoding="async"
         alt="A miniature blue paper dispensing machine still handing out old cards while a fresh coral instruction card waits beside it."

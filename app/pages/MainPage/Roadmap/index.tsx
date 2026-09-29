@@ -1,5 +1,6 @@
+import roadmapSmall from './roadmap-small.webp'
 import { Link } from 'react-router'
-import roadmap from './roadmap.png'
+import roadmap from './roadmap.webp'
 
 export function Roadmap() {
   return (
@@ -18,9 +19,11 @@ export function Roadmap() {
       <figure>
         <img
           src={roadmap}
+          srcSet={`${roadmapSmall} 600w, ${roadmap} 1440w`}
+          sizes="(min-width: 72rem) 1088px, (min-width: 48rem) calc(100vw - 64px), calc(100vw - 32px)"
           alt="A running public website leads to visible evidence in progress. Dotted branches propose interactive features, APIs with stored data, and access with transactions."
-          width={1536}
-          height={1024}
+          width={1440}
+          height={960}
           loading="lazy"
         />
         <figcaption>

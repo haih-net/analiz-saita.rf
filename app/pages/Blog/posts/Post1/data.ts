@@ -1,5 +1,6 @@
+import paperSiteSmall from './assets/paper-site-small.webp'
 import type { Post, PostSeo } from '../../interfaces'
-import paperSite from './assets/paper-site.png'
+import paperSite from './assets/paper-site.webp'
 
 // Publication snapshots are intentionally fixed, not derived from the current build.
 export const post1: Post = {
@@ -13,9 +14,10 @@ export const post1: Post = {
   commit: 'ccf201ec57dcf867e11c2f389ebfd0875a72b8a6',
   image: {
     src: paperSite,
+    srcSet: `${paperSiteSmall} 600w, ${paperSite} 1440w`,
     alt: 'A small office pavilion built from paper website pages.',
-    width: 1536,
-    height: 1024,
+    width: 1440,
+    height: 960,
   },
   commitUrl:
     'https://github.com/haih-net/haih.site/commit/ccf201ec57dcf867e11c2f389ebfd0875a72b8a6',

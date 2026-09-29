@@ -1,6 +1,6 @@
-import adopted from './adopted.png'
-import rejected from './rejected.png'
-import unresolved from './unresolved.png'
+import adopted from './adopted.webp'
+import rejected from './rejected.webp'
+import unresolved from './unresolved.webp'
 
 const outcomes = [
   {
@@ -47,7 +47,7 @@ export function ExperimentOutcomes() {
             className={`main-page__outcome main-page__outcome--${tone}`}
             key={title}
           >
-            <img src={image} alt="" width={1254} height={1254} loading="lazy" />
+            <img src={image} alt="" width={176} height={176} loading="lazy" />
             <div>
               <h3>{title}</h3>
               <p>{description}</p>

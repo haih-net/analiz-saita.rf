@@ -9,8 +9,9 @@ export default function BlogPage() {
         <p className="journal-kicker">Notes from the build</p>
         <h1 tabIndex={-1}>The work, as we see it.</h1>
         <p>
-          Observations, doubts and conclusions from making this website. A
-          record of what we think now, with a revision to return to later.
+          Observations, doubts and conclusions from HAIH and the applications
+          built from it. A record of what we think now, with a revision to
+          return to later.
         </p>
       </header>
       {posts.map((post, index) => (
@@ -22,6 +23,8 @@ export default function BlogPage() {
           >
             <img
               src={post.image.src}
+              srcSet={post.image.srcSet}
+              sizes="(min-width: 72rem) 475px, (min-width: 48rem) calc(45vw - 43px), calc(100vw - 32px)"
               alt={post.image.alt}
               width={post.image.width}
               height={post.image.height}
@@ -31,7 +34,7 @@ export default function BlogPage() {
           </Link>
           <div className="journal-card-copy">
             <p className="journal-kicker">
-              {String(posts.length - index).padStart(2, '0')} / Field notes ·{' '}
+              {String(index + 1).padStart(2, '0')} / Field notes ·{' '}
               <time dateTime={post.date}>{post.dateLabel}</time>
             </p>
             <h2>

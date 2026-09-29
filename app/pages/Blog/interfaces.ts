@@ -16,6 +16,7 @@ export type PostSeo = {
   path: string
   image: {
     src: string
+    srcSet?: string
     alt: string
     width: number
     height: number

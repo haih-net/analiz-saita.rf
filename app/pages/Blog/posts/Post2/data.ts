@@ -1,5 +1,6 @@
+import runtimeSmall from './assets/runtime-small.webp'
 import type { Post, PostSeo } from '../../interfaces'
-import runtime from './assets/runtime.png'
+import runtime from './assets/runtime.webp'
 
 export const post2: Post = {
   path: '/blog/one-server-two-modes-and-an-api',
@@ -12,9 +13,10 @@ export const post2: Post = {
   commit: 'a83f4993e06c287a0e4e7639ef2b6521d60b3232',
   image: {
     src: runtime,
+    srcSet: `${runtimeSmall} 600w, ${runtime} 1440w`,
     alt: 'A paper website pavilion with a compact blue engine inside.',
-    width: 1536,
-    height: 1024,
+    width: 1440,
+    height: 960,
   },
   commitUrl:
     'https://github.com/haih-net/haih.site/commit/a83f4993e06c287a0e4e7639ef2b6521d60b3232',

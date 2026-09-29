@@ -2,7 +2,7 @@ import type { MetaFunction } from 'react-router'
 import { createSeoMeta, unavailableSeoMeta } from '../components/seo/SeoHeaders'
 import type { SeoHandle } from '../components/seo/SeoHeaders'
 import MainPage from '../pages/MainPage'
-import delivery from '../pages/MainPage/Hero/delivery.png'
+import delivery from '../pages/MainPage/Hero/delivery.webp'
 import { site } from '../components/seo/site'
 
 export const handle = {
@@ -13,8 +13,8 @@ export const handle = {
     image: {
       src: delivery,
       alt: 'A conceptual illustration of the HAIH website delivery architecture.',
-      width: 1536,
-      height: 1024,
+      width: 1200,
+      height: 800,
     },
   },
 } satisfies SeoHandle

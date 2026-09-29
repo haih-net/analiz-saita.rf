@@ -1,6 +1,8 @@
+import requestChartSmall from './request-chart-small.webp'
+import requestFlowSmall from './request-flow-small.webp'
 import { Link } from 'react-router'
-import requestFlow from './request-flow.png'
-import requestChart from './request-chart.png'
+import requestFlow from './request-flow.webp'
+import requestChart from './request-chart.webp'
 
 export function RequestEvidence() {
   return (
@@ -20,9 +22,11 @@ export function RequestEvidence() {
         <figure>
           <img
             src={requestFlow}
+            srcSet={`${requestFlowSmall} 600w, ${requestFlow} 1080w`}
+            sizes="(min-width: 72rem) 532px, (min-width: 48rem) calc(50vw - 44px), calc(100vw - 32px)"
             alt="Browser to Traefik to Varnish, branching into a cached response or an origin request."
-            width={1536}
-            height={1024}
+            width={1080}
+            height={720}
             loading="lazy"
           />
           <figcaption>
@@ -33,9 +37,11 @@ export function RequestEvidence() {
         <figure>
           <img
             src={requestChart}
+            srcSet={`${requestChartSmall} 600w, ${requestChart} 1080w`}
+            sizes="(min-width: 72rem) 532px, (min-width: 48rem) calc(50vw - 44px), calc(100vw - 32px)"
             alt="Illustrative blue requests and coral origin requests curves; no measured traffic values."
-            width={1536}
-            height={1024}
+            width={1080}
+            height={720}
             loading="lazy"
           />
           <figcaption>

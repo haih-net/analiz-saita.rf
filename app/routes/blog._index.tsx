@@ -8,7 +8,7 @@ export const handle = {
   seo: {
     title: 'Building HAIH: observations and lessons — HAIH Blog',
     description:
-      'Field notes on building a website with AI: working results, unexpected failures and open decisions, with a project version and commit for each story.',
+      'Field notes on building websites and applications with AI: working results, unexpected failures and open decisions, with a project version and commit for each story.',
     path: '/blog',
     image: post1Seo.image,
     blog: { posts },

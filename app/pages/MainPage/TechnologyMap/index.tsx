@@ -1,5 +1,6 @@
+import technologyMapSmall from './technology-map-small.webp'
 import { Link } from 'react-router'
-import technologyMap from './technology-map.png'
+import technologyMap from './technology-map.webp'
 
 export function TechnologyMap() {
   return (
@@ -16,9 +17,11 @@ export function TechnologyMap() {
       <figure>
         <img
           src={technologyMap}
+          srcSet={`${technologyMapSmall} 600w, ${technologyMap} 1440w`}
+          sizes="(min-width: 72rem) 1088px, (min-width: 48rem) calc(100vw - 64px), calc(100vw - 32px)"
           alt="Docker Compose surrounds three groups: Build with Node.js, TypeScript and Vite; Browser with React and React Router; Delivery with Traefik, Varnish and sirv."
-          width={1536}
-          height={1024}
+          width={1440}
+          height={960}
           loading="lazy"
         />
         <figcaption>

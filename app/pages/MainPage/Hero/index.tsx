@@ -1,5 +1,6 @@
+import deliverySmall from './delivery-small.webp'
 import { Link } from 'react-router'
-import delivery from './delivery.png'
+import delivery from './delivery.webp'
 
 export function Hero() {
   return (
@@ -40,9 +41,11 @@ export function Hero() {
       <figure>
         <img
           src={delivery}
+          srcSet={`${deliverySmall} 600w, ${delivery} 1200w`}
+          sizes="(min-width: 72rem) 616px, (min-width: 64rem) calc(57.5vw - 46px), (min-width: 48rem) calc(100vw - 64px), calc(100vw - 32px)"
           alt="Concept illustration of a browser, Traefik, Varnish, Node.js with sirv, and build artifacts."
-          width={1536}
-          height={1024}
+          width={1200}
+          height={800}
           fetchPriority="high"
         />
         <figcaption>

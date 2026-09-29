@@ -1,7 +1,9 @@
+import imageWeightSmall from './assets/image-weight-small.webp'
+import paperSiteSmall from './assets/paper-site-small.webp'
 import { Link } from 'react-router'
 import { author } from '../../../../components/seo/site'
-import paperSite from './assets/paper-site.png'
-import imageWeight from './assets/image-weight.png'
+import paperSite from './assets/paper-site.webp'
+import imageWeight from './assets/image-weight.webp'
 import { BlogStyled } from '../../styles'
 import { post1 as post } from './data'
 
@@ -53,9 +55,11 @@ export const Post1: React.FC = () => {
       <figure className="field-note-cover">
         <img
           src={paperSite}
+          srcSet={`${paperSiteSmall} 600w, ${paperSite} 1440w`}
+          sizes="(min-width: 72rem) 1088px, (min-width: 48rem) calc(100vw - 64px), calc(100vw - 32px)"
           alt="A small office pavilion built from paper website pages, with a few unfinished structural pieces beside it."
-          width={1536}
-          height={1024}
+          width={1440}
+          height={960}
           fetchPriority="high"
         />
         <figcaption>
@@ -120,9 +124,11 @@ export const Post1: React.FC = () => {
       <figure className="field-note-image">
         <img
           src={imageWeight}
+          srcSet={`${imageWeightSmall} 600w, ${imageWeight} 1440w`}
+          sizes="(min-width: 72rem) 1088px, (min-width: 48rem) calc(100vw - 64px), calc(100vw - 32px)"
           alt="A thick stack of large photographic prints beside two smaller versions and a ruler, illustrating the choice of image dimensions."
-          width={1536}
-          height={1024}
+          width={1440}
+          height={960}
           loading="lazy"
           decoding="async"
         />

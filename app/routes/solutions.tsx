@@ -3,7 +3,7 @@ import { createSeoMeta, unavailableSeoMeta } from '../components/seo/SeoHeaders'
 import type { SeoHandle } from '../components/seo/SeoHeaders'
 import SolutionsPage from '../pages/SolutionsPage'
 import { layers } from '../pages/SolutionsPage/solutions'
-import technologyMap from '../pages/MainPage/TechnologyMap/technology-map.png'
+import technologyMap from '../pages/MainPage/TechnologyMap/technology-map.webp'
 
 export const handle = {
   seo: {
@@ -14,8 +14,8 @@ export const handle = {
     image: {
       src: technologyMap,
       alt: 'A conceptual map of the HAIH build, browser and delivery layers.',
-      width: 1536,
-      height: 1024,
+      width: 1440,
+      height: 960,
     },
     collection: {
       name: 'HAIH solution layers',

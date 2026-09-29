@@ -10,6 +10,7 @@ const paths = [
   '/blog',
   '/blog/a-small-site-and-the-limits-we-found',
   '/blog/one-server-two-modes-and-an-api',
+  '/blog/eighteen-hours-a-real-portal-in-production',
 ]
 const read = (path) =>
   readFileSync(
@@ -141,7 +142,13 @@ test('solutions collection points at real visible sections, preserving fragment 
   }
 })
 
-for (const [path, version, commit] of [
+for (const [
+  path,
+  version,
+  commit,
+  repository = 'haih-net/haih.site',
+  published = '2026-09-28',
+] of [
   [
     '/blog/a-small-site-and-the-limits-we-found',
     'v0.1.0-1-gccf201e',
@@ -151,6 +158,13 @@ for (const [path, version, commit] of [
     '/blog/one-server-two-modes-and-an-api',
     'v0.2.0',
     'a83f4993e06c287a0e4e7639ef2b6521d60b3232',
+  ],
+  [
+    '/blog/eighteen-hours-a-real-portal-in-production',
+    'pivkarta.ru-v1.0.0',
+    '2f1caf82078c510099e2c2a98c9cf52ee369c65a',
+    'Pivkarta/pivkarta.ru-3',
+    '2026-09-29',
   ],
 ]) {
   test(`${path} connects author, image and frozen revision`, () => {
@@ -167,9 +181,9 @@ for (const [path, version, commit] of [
     assert.equal(article.about.version, version)
     assert.equal(
       article.citation,
-      `https://github.com/haih-net/haih.site/commit/${commit}`,
+      `https://github.com/${repository}/commit/${commit}`,
     )
-    assert.equal(article.datePublished, '2026-09-28')
+    assert.equal(article.datePublished, published)
     assert.equal(article.dateModified, undefined)
     const imagePath = new URL(article.image.url).pathname
     assert.ok(imagePath.startsWith('/assets/'))
