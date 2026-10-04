@@ -161,3 +161,7 @@ See repository for license details.
 `app/components/Layout` provides the common Header, main landmark and Footer. The root document wraps route content and error fallbacks with this shell, so navigation stays available on 404 and route-error pages. Internal links use React Router, with active navigation and heading focus after forward navigation. A keyboard skip link targets the main content. The footer follows long content and sits at the bottom of short pages.
 
 The shell uses small mobile-first plain CSS rules without adding a styling dependency; this does not resolve the separate styled-component investigation. Verified with `npm run types`, `npm run build`, focused ESLint, generated HTML inspection, and browser checks through the development proxy at desktop and 360px widths, including navigation, a route rendering error and a missing page.
+
+## Server monitoring
+
+The [monitoring runbook](docker/monitoring/README.md) describes the production-artifact preview, Grafana dashboard, internal per-site probes, request/application logs and optional email/Telegram alerts. The installation is shared by sites behind one Traefik and uses an explicit site registry. [Verification results](docker/monitoring/verification.md) distinguish the local checks from unverified production behavior. Request filtering is deferred.

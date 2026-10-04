@@ -7,3 +7,7 @@ shared/*
 
 !.gitkeep
 
+
+docker/monitoring/.secrets/
+
+docker/monitoring/alertmanager/generated.json

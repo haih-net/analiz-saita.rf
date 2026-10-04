@@ -1,5 +1,8 @@
 import express from 'express'
 import { createServer } from 'node:http'
+import { resolve } from 'node:path'
+import { pathToFileURL } from 'node:url'
+import { logEvent, startMetricsServer } from './observability'
 import type { ServerBuild } from 'react-router'
 import type { ViteDevServer } from 'vite'
 
@@ -11,6 +14,7 @@ const port = Number(process.env.PORT || 3000)
 let stopGraphql: (() => Promise<void>) | null = null
 let vite: ViteDevServer | null = null
 let stopping = false
+let metricsServer: ReturnType<typeof startMetricsServer> = null
 
 function setupShutdown(server: ReturnType<typeof createServer>) {
   const shutdown = async (signal: string) => {
@@ -18,8 +22,8 @@ function setupShutdown(server: ReturnType<typeof createServer>) {
       return
     }
     stopping = true
-    // eslint-disable-next-line no-console
-    console.log(`\n[server] Received ${signal}, shutting down...`)
+    logEvent('info', 'shutdown', { signal })
+    metricsServer?.close()
 
     if (stopGraphql) {
       await stopGraphql()
@@ -77,18 +81,18 @@ async function startServer() {
     const sirv = (await import('sirv')).default
     app.use(sirv('build/client', { extensions: [] }))
 
-    // TODO Fix imports
-    const build =
-      // @ts-expect-error prod bundles
-      (await import('build/server/index.js')) as ServerBuild
+    const buildUrl: string = pathToFileURL(
+      resolve('build/server/index.js'),
+    ).href
+    const build: ServerBuild = (await import(buildUrl)) as ServerBuild
     app.all('/{*splat}', createRequestHandler({ build }))
   }
 
+  metricsServer = startMetricsServer()
   setupShutdown(httpServer)
 
   httpServer.listen(port, '0.0.0.0', () => {
-    // eslint-disable-next-line no-console
-    console.log(`Server ready at http://localhost:${port}`)
+    logEvent('info', 'server_ready', { port })
   })
 }
 

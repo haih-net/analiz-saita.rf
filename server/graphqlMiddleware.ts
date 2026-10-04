@@ -8,6 +8,7 @@ import cors from 'cors'
 import express from 'express'
 
 import { schema } from './schema'
+import { graphqlObservability, logEvent } from './observability'
 import type { Context } from './schema/builder'
 
 export async function setupGraphqlMiddleware(
@@ -19,6 +20,7 @@ export async function setupGraphqlMiddleware(
     introspection: true,
     includeStacktraceInErrorResponses: process.env.NODE_ENV === 'development',
     plugins: [
+      graphqlObservability,
       ApolloServerPluginDrainHttpServer({ httpServer }),
       ApolloServerPluginLandingPageLocalDefault({ embed: true }),
     ],
@@ -41,8 +43,7 @@ export async function setupGraphqlMiddleware(
     }),
   )
 
-  // eslint-disable-next-line no-console
-  console.log('GraphQL middleware ready at /api')
+  logEvent('info', 'graphql_ready')
 
   return async () => {
     try {

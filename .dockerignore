@@ -2,3 +2,6 @@ node_modules
 build
 .git
 .react-router
+
+docker/monitoring/.secrets
+docker/monitoring/alertmanager/generated.json

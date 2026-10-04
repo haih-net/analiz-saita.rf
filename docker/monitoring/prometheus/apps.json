@@ -1,0 +1,10 @@
+[
+  {
+    "targets": [
+      "app:9464"
+    ],
+    "labels": {
+      "site": "haih.site"
+    }
+  }
+]

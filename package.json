@@ -21,7 +21,12 @@
     "format:check": "prettier --check .",
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build",
-    "test:seo": "node --experimental-strip-types --test tests/seo.test.mjs"
+    "test:seo": "node --experimental-strip-types --test tests/seo.test.mjs",
+    "monitoring:configure": "node scripts/configure-monitoring.mjs",
+    "test:monitoring": "node --test tests/monitoring/integration.test.mjs",
+    "test:monitoring:failure": "node tests/monitoring/failure-check.mjs",
+    "test:monitoring:notifications": "node tests/monitoring/notifications-check.mjs",
+    "test:monitoring:unit": "node --test tests/monitoring/config.test.mjs && tsx --test tests/monitoring/graphql.test.ts"
   },
   "dependencies": {
     "@apollo/server": "^5.5.1",
@@ -29,6 +34,7 @@
     "@linaria/core": "^8.2.0",
     "@linaria/react": "^8.2.0",
     "@pothos/core": "^4.15.1",
+    "@prometheus-io/client": "0.16.1",
     "@react-router/express": "^8.4.0",
     "@react-router/fs-routes": "^8.4.0",
     "cors": "^2.8.6",
