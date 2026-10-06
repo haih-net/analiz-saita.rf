@@ -6,6 +6,7 @@ const paths = [
   '/',
   '/solutions',
   '/blog',
+  '/blog/the-tests-passed-which-tests',
   '/blog/a-small-site-and-the-limits-we-found',
   '/blog/one-server-two-modes-and-an-api',
   '/blog/eighteen-hours-a-real-portal-in-production',
@@ -130,6 +131,13 @@ for (const [
   repository = 'haih-net/haih.site',
   published = '2026-09-28',
 ] of [
+  [
+    '/blog/the-tests-passed-which-tests',
+    '349ed44',
+    '349ed447f43298394bdc74dea72546aa922337ec',
+    'haih-net/haih.site',
+    '2026-10-06',
+  ],
   [
     '/blog/a-small-site-and-the-limits-we-found',
     'v0.1.0-1-gccf201e',
