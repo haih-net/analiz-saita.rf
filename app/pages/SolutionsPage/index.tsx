@@ -66,6 +66,15 @@ export const SolutionsPage: React.FC = () => (
       </Link>
       .
     </p>
+    <p>
+      The development proxy serves the same app over HTTP and HTTPS at once.
+      Both views receive React updates through their own page port; development
+      Varnish passes requests without caching. Read{' '}
+      <Link to="/blog/two-protocols-one-development-loop">
+        Two protocols. One development loop.
+      </Link>{' '}
+      for the local browser check and setup requirements.
+    </p>
     <nav aria-label="Solution layers">
       <ul>
         {layers.map((layer) => (

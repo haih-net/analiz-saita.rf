@@ -66,7 +66,7 @@ export const layers: SolutionLayer[] = [
             provides:
               'A development server with HMR, module and asset processing, production bundles and code splitting. It covers these needs without a custom build pipeline; it is not the production HTTP server.',
             dependsOn:
-              'Node.js, source modules and configuration. React Router supplies routing and prerendering; a comparison against other build tools has not been documented.',
+              'Node.js, source modules and configuration. Vite shares the application HTTP listener for HMR at /__vite_hmr; the browser uses its page host, port and WS/WSS protocol. React Router supplies routing and prerendering. A React edit was checked over simultaneous local HTTP and HTTPS connections; this does not establish every style or state-preservation case.',
             children: [
               {
                 id: 'linaria',
@@ -75,9 +75,22 @@ export const layers: SolutionLayer[] = [
                 provides:
                   'Styled-component references inside selectors while extracting CSS during the build. This styling requirement exists now, which is why Linaria was introduced now.',
                 dependsOn:
-                  'The Vite transform and statically extractable styles. Page and layout wrappers use Linaria styled components with CSS extracted during the build. Cross-file selectors, dynamic values, HMR, hydration and lazy CSS delivery still need focused verification; fewer dependencies alone would not make CSS Modules an equivalent substitute.',
+                  'The Vite transform and statically extractable styles. Page and layout wrappers use Linaria styled components with CSS extracted during the build. While preparing the HTTP/HTTPS article, one style edit remained stale in development until the app restarted, although the build extracted the new rule. Its cause remains open. Cross-file selectors, dynamic values, hydration and lazy CSS delivery still need focused verification; fewer dependencies alone would not make CSS Modules an equivalent substitute.',
               },
             ],
+          },
+          {
+            id: 'development-http-https',
+            name: 'HTTP and HTTPS development with shared HMR',
+            status: 'Implemented; checked in local Chromium',
+            provides:
+              'Open the same running app over HTTP and HTTPS at once. One React source edit updates both views without switching modes or publishing a separate HMR port. Traefik routes the update connection directly to the app; ordinary requests pass through Varnish without caching.',
+            dependsOn:
+              'For the proxy path: Docker Compose, the configured external network, available ports and a local TLS certificate. Defaults are HTTP 8080, HTTPS 8443 and direct app HTTP 3001. Browser trust is a separate setup step; published ports bind to loopback. The check covered two tabs and a React component edit, not every browser, Linaria update, authentication flow or remote device. Direct npm run dev remains available without this infrastructure.',
+            evidence: {
+              label: 'Two protocols. One development loop.',
+              path: '/blog/two-protocols-one-development-loop',
+            },
           },
           {
             id: 'typescript',
@@ -244,9 +257,9 @@ export const layers: SolutionLayer[] = [
               {
                 id: 'cache-container',
                 name: 'Cache service container',
-                status: 'Configured for production',
+                status: 'Configured for production and development',
                 provides:
-                  'Runs Varnish as a separate service in front of the origin.',
+                  'Runs Varnish in front of the origin, with separate production caching and development pass policies.',
                 dependsOn:
                   'The Varnish configuration described below and a reachable app service.',
               },
@@ -267,18 +280,18 @@ export const layers: SolutionLayer[] = [
         name: 'Traefik',
         status: 'Optional; configured',
         provides:
-          'A shared entry point and routing to the app or cache. It is useful when deployment needs proxy routing or TLS termination rather than direct access to a Node.js port.',
+          'A shared entry point, TLS termination and routing to the app or cache. Development exposes HTTP and HTTPS together; /__vite_hmr goes directly to the app while page requests go through Varnish.',
         dependsOn:
-          'Routing, network and upstream configuration; TLS additionally needs domains and certificates. It does not inherently require Docker or Varnish. Our optional development environment uses it in front of Vite; direct npm run dev does not need it.',
+          'Routing, network and upstream configuration; TLS needs a certificate matching the requested hostname or IP address and browser trust. The development Compose override selects its own dynamic routing directory. Direct npm run dev does not need Traefik. Local Chromium verified HTTPS delivery and WSS updates through the proxy.',
       },
       {
         id: 'varnish',
         name: 'Varnish',
-        status: 'Optional; configured for production',
+        status: 'Optional; production caching and development pass mode',
         provides:
           'Caches eligible public responses to avoid repeated origin requests. This is an additional delivery capability, not a requirement for React, Vite or Node.js.',
         dependsOn:
-          'An HTTP origin and VCL rules. The current policy passes /api and non-GET/HEAD requests, avoids caching non-200 responses, and assigns successful responses one hour or matching asset paths seven days. It removes request cookies and response Set-Cookie headers; it is not a finished policy for authenticated or personalized content. Publication invalidation remains open. Direct development access bypasses Varnish; the configured proxy path can include it.',
+          'An HTTP origin and VCL rules. The production policy passes /api and non-GET/HEAD requests, avoids caching non-200 responses, and assigns successful responses one hour or matching asset paths seven days. It removes request cookies and response Set-Cookie headers; it is not a finished policy for authenticated or personalized content. Publication invalidation remains open. Direct development access bypasses Varnish. The development proxy path uses a separate VCL that passes every request and returns X-Cache: PASS and Cache-Control: no-store. It does not test production cache hits.',
       },
     ],
   },

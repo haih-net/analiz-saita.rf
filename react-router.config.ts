@@ -5,6 +5,7 @@ export default {
     '/',
     '/solutions',
     '/blog',
+    '/blog/two-protocols-one-development-loop',
     '/blog/open-to-bots-closed-to-abuse',
     '/blog/the-tests-passed-which-tests',
     '/blog/eighteen-hours-a-real-portal-in-production',

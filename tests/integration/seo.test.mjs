@@ -6,6 +6,7 @@ const paths = [
   '/',
   '/solutions',
   '/blog',
+  '/blog/two-protocols-one-development-loop',
   '/blog/open-to-bots-closed-to-abuse',
   '/blog/the-tests-passed-which-tests',
   '/blog/a-small-site-and-the-limits-we-found',
@@ -132,6 +133,13 @@ for (const [
   repository = 'haih-net/haih.site',
   published = '2026-09-28',
 ] of [
+  [
+    '/blog/two-protocols-one-development-loop',
+    '84a5668',
+    '84a5668d50422be96e0062f99c3b0a2c3e51e674',
+    'haih-net/haih.site',
+    '2026-10-06',
+  ],
   [
     '/blog/open-to-bots-closed-to-abuse',
     'ff06b51',
