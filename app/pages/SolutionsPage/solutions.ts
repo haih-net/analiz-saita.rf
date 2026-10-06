@@ -75,7 +75,7 @@ export const layers: SolutionLayer[] = [
                 provides:
                   'Styled-component references inside selectors while extracting CSS during the build. This styling requirement exists now, which is why Linaria was introduced now.',
                 dependsOn:
-                  'The Vite transform and statically extractable styles. Page and layout wrappers use Linaria styled components with CSS extracted during the build. While preparing the HTTP/HTTPS article, one style edit remained stale in development until the app restarted, although the build extracted the new rule. Its cause remains open. Cross-file selectors, dynamic values, hydration and lazy CSS delivery still need focused verification; fewer dependencies alone would not make CSS Modules an equivalent substitute.',
+                  'The Vite transform and statically extractable styles. Page and layout wrappers use Linaria styled components with CSS extracted during the build. While preparing the HTTP/HTTPS article, one style edit remained stale in development until the app restarted, although the build extracted the new rule. Follow-up color and new-rule edits updated correctly both directly and through Varnish in verified pass mode; the earlier failure was not reproduced and its cause remains open. Cross-file selectors, dynamic values, hydration and lazy CSS delivery still need focused verification; fewer dependencies alone would not make CSS Modules an equivalent substitute.',
               },
             ],
           },

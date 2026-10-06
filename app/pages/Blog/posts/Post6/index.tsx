@@ -226,7 +226,13 @@ HMR  → Traefik → app WebSocket`}</code>
           generated CSS, even to a fresh page load. Restarting the app served
           the updated stylesheet. The production build had already extracted the
           new rule. This observation needs a separate investigation; the
-          successful React update does not explain or resolve it.
+          successful React update does not explain or resolve it. A follow-up
+          comparison changed a color and added a new CSS rule while observing
+          the app directly on port 3001 and through the HTTPS proxy. Both
+          updates worked on both paths. The active Varnish configuration used
+          pass mode. We have not reproduced the earlier failure or established
+          whether its cause was in the transform, invalidation or another part
+          of the development path.
         </p>
         <aside className="field-note-margin">
           <strong>The boundary of this result</strong>
