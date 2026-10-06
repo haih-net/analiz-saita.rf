@@ -1,6 +1,7 @@
 // @ts-check
+
 /** @type {import("vitest/config").UserConfig} */
-module.exports = {
+const testConfig = {
   test: {
     environment: 'node',
     include: [
@@ -18,4 +19,18 @@ module.exports = {
       reporter: ['text', 'html', 'lcov'],
     },
   },
+}
+
+/** @type {import("vite").UserConfigFnPromise} */
+module.exports = async (configEnv) => {
+  const { resolve } = await import('node:path')
+  const { loadConfigFromFile, mergeConfig } = await import('vite')
+  const loaded = await loadConfigFromFile(
+    configEnv,
+    resolve(__dirname, 'vite.config.ts'),
+  )
+  if (!loaded) {
+    throw new Error('Unable to load the Vite configuration for tests')
+  }
+  return mergeConfig(loaded.config, testConfig)
 }

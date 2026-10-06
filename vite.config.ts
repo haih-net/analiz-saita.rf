@@ -35,9 +35,15 @@ function serveShared(): Plugin {
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   return {
+    resolve: {
+      alias: {
+        app: resolve(import.meta.dirname, 'app'),
+      },
+    },
     plugins: [
       wyw({ include: ['**/*.{ts,tsx}'] }),
-      reactRouter(),
+      // React Router owns the application build pipeline, not the test runner.
+      !process.env.VITEST && reactRouter(),
       serveShared(),
     ],
     server: { allowedHosts: ['haih.localhost'] },
