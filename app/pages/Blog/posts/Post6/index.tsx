@@ -220,20 +220,6 @@ HMR  → Traefik → app WebSocket`}</code>
           from the live browser experiment. This was a focused check, not a new
           HMR scenario added to the ordinary production browser suite.
         </p>
-        <p>
-          Preparing this article supplied a useful counterexample: after a
-          Linaria style edit, the development server kept returning the old
-          generated CSS, even to a fresh page load. Restarting the app served
-          the updated stylesheet. The production build had already extracted the
-          new rule. This observation needs a separate investigation; the
-          successful React update does not explain or resolve it. A follow-up
-          comparison changed a color and added a new CSS rule while observing
-          the app directly on port 3001 and through the HTTPS proxy. Both
-          updates worked on both paths. The active Varnish configuration used
-          pass mode. We have not reproduced the earlier failure or established
-          whether its cause was in the transform, invalidation or another part
-          of the development path.
-        </p>
         <aside className="field-note-margin">
           <strong>The boundary of this result</strong>
           <p>
