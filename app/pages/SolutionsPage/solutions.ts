@@ -4,6 +4,7 @@ export type Solution = {
   status: string
   provides: string
   dependsOn: string
+  evidence?: { label: string; path: string }
   children?: Solution[]
 }
 
@@ -17,9 +18,9 @@ export type SolutionLayer = {
 export const layers: SolutionLayer[] = [
   {
     id: 'application',
-    name: 'Application — what runs in the browser',
+    name: 'Application — components, navigation and rendering',
     summary:
-      'The application is built from React components. Infrastructure is outside this layer.',
+      'React components form the pages. React Router connects browser navigation with prerendering and the application server.',
     solutions: [
       {
         id: 'react',
@@ -37,7 +38,7 @@ export const layers: SolutionLayer[] = [
             provides:
               'Routes, SPA navigation, metadata integration, lazy route modules, error boundaries and build-time page rendering. Vite alone does not provide this complete integration.',
             dependsOn:
-              'React; its Vite integration and Node.js during development/build. A permanent SSR process is not required by the current setup.',
+              'React, its Vite integration and Node.js. The current configuration enables request-time SSR alongside prerendering; Express connects the production server build. Components are not automatically excluded from client JavaScript because they were prerendered.',
           },
         ],
       },
@@ -61,7 +62,7 @@ export const layers: SolutionLayer[] = [
           {
             id: 'vite',
             name: 'Vite',
-            status: 'In use through React Router',
+            status: 'In use as Express middleware with React Router',
             provides:
               'A development server with HMR, module and asset processing, production bundles and code splitting. It covers these needs without a custom build pipeline; it is not the production HTTP server.',
             dependsOn:
@@ -83,7 +84,7 @@ export const layers: SolutionLayer[] = [
             name: 'TypeScript',
             status: 'In use',
             provides:
-              'Checks component props and integration contracts; compiles the production server. Type checking is a separate command, not an automatic guarantee of Vite bundling.',
+              'Checks component props and integration contracts with npm run types. esbuild bundles the production server separately; a successful bundle does not imply a successful type check.',
             dependsOn:
               'Node.js, type definitions and TypeScript configuration. It does not replace runtime validation.',
           },
@@ -98,14 +99,53 @@ export const layers: SolutionLayer[] = [
           },
           {
             id: 'checks',
-            name: 'ESLint, Prettier and Node.js HTTP tests',
+            name: 'ESLint and Prettier',
             status: 'In use',
             provides:
-              'Code checks, consistent formatting and HTTP contract checks alongside type checking and builds.',
+              'Code checks and consistent formatting alongside type checking. Behavioral verification is described in the testing layer below.',
             dependsOn:
-              'Project configuration and a running target for HTTP tests. Varnish assertions require the cache path; repeatable browser automation remains to be added.',
+              'Project rules and configuration. Static checks do not establish browser behavior, API correctness or cache policy.',
           },
         ],
+      },
+    ],
+  },
+  {
+    id: 'verification',
+    name: 'Verification — checks with explicit environments',
+    summary:
+      'Fast unit feedback, local integration checks, browser scenarios and deployed-stack checks have separate commands. A result applies to the behavior and environment it actually exercised.',
+    solutions: [
+      {
+        id: 'vitest',
+        name: 'Vitest',
+        status: 'In use; unit and integration suites',
+        provides:
+          'npm test discovers unit tests without a running application. npm run test:integration builds first, then checks generated SEO/HTML, monitoring configuration and a GraphQL error fixture. Watch commands and unit coverage reports are available.',
+        dependsOn:
+          'Node.js and the test configuration. Integration fixtures use temporary files and local listeners; the integration watcher does not rebuild changed artifacts. Coverage is scoped to configured SEO/server source, not the whole system.',
+        evidence: {
+          label: 'The tests passed. Which tests?',
+          path: '/blog/the-tests-passed-which-tests',
+        },
+      },
+      {
+        id: 'playwright',
+        name: 'Playwright',
+        status: 'In use; focused browser checks',
+        provides:
+          'Tests SPA navigation, history, metadata, heading focus, deep-link refresh and 404 behavior in desktop Chromium, desktop WebKit and mobile Chromium. Failures retain traces and screenshots.',
+        dependsOn:
+          'Browser binaries and system libraries. npm run e2e normally builds and starts the production Node.js server; PLAYWRIGHT_BASE_URL instead uses a prepared environment. These scenarios do not establish every hydration, accessibility or chunk-recovery behavior.',
+      },
+      {
+        id: 'stack-tests',
+        name: 'Production-path and monitoring checks',
+        status: 'Configured; require a running stack',
+        provides:
+          'npm run test:integration:stack checks HTTP/cache behavior and the monitoring integration. Controlled failure and notification exercises remain separate explicit commands.',
+        dependsOn:
+          'A prepared Traefik → Varnish → Node.js environment, monitoring services and local credentials. A passing direct-server test is not evidence about Varnish; notification fixtures do not establish delivery to real recipients.',
       },
     ],
   },
@@ -113,25 +153,47 @@ export const layers: SolutionLayer[] = [
     id: 'production',
     name: 'Production — serve the finished build',
     summary:
-      'Minimal current path: npm run build → npm run start → Node.js + sirv. The browser receives build artifacts. No Docker, reverse proxy or cache is required for this direct path.',
+      'Direct path: npm run build → npm run start → Node.js with Express, GraphQL, sirv and the React Router server build. Docker, a reverse proxy and a cache are not required for this direct path.',
     solutions: [
       {
         id: 'node-production',
         name: 'Node.js HTTP process',
         status: 'In use',
         provides:
-          'Runs the production service with npm run start. No Vite development server or request-time React renderer is needed.',
+          'Runs the built application with npm run start, including GraphQL and the React Router request handler. Vite middleware is used only in development.',
         dependsOn:
           'A completed build, Node.js, production dependencies and a reachable port.',
         children: [
           {
+            id: 'express',
+            name: 'Express',
+            status: 'In use in development and production',
+            provides:
+              'One application entry point for GraphQL and page handling. Development attaches Vite middleware; production attaches sirv and the React Router server build.',
+            dependsOn:
+              'Node.js, middleware ordering and shutdown handling. It was adopted for the application/API requirement, not merely to serve files.',
+            evidence: {
+              label: 'The shared server field note',
+              path: '/blog/one-server-two-modes-and-an-api',
+            },
+          },
+          {
+            id: 'api',
+            name: 'GraphQL — Apollo Server + Pothos',
+            status: 'Implemented; minimal health API',
+            provides:
+              'A typed server schema, a /api endpoint and an embedded query explorer. The health query establishes API reachability; error instrumentation catches GraphQL failures even with HTTP 200.',
+            dependsOn:
+              'Express, Apollo Server, Pothos and GraphQL. No database, authorization layer or frontend API client has been added. This API shares the application process rather than running as a standalone service.',
+          },
+          {
             id: 'sirv',
-            name: 'sirv + a small HTTP policy wrapper',
+            name: 'sirv',
             status: 'In use',
             provides:
-              'Serves generated pages and assets, with cache headers, GET/HEAD support and intentional 404 responses. A general backend framework is unnecessary for these file-serving requirements.',
+              'Serves files from build/client as Express middleware. Requests not served as files reach the React Router handler; the unknown route returns 404.',
             dependsOn:
-              'The Node.js HTTP server, built files and routing/error policies. HTML uses a 60-second shared-cache lifetime; hashed assets can be cached immutably.',
+              'Express and a completed client build. Cache behavior through Varnish comes from its separate VCL policy; direct Node.js serving must not be assumed to have the same cache behavior.',
           },
         ],
       },
@@ -150,7 +212,7 @@ export const layers: SolutionLayer[] = [
     id: 'infrastructure',
     name: 'Optional deployment environment — around the application',
     summary:
-      'These are independent operational choices, not application prerequisites. The configured production path is Traefik → Varnish → Node.js + sirv. Compose groups services; it is not another hop in that request path.',
+      'These are deployment choices, not prerequisites for direct Node.js execution. The configured path is Traefik → Varnish → the Node.js application. A server can share one Traefik and one monitoring installation across multiple sites.',
     solutions: [
       {
         id: 'docker',
@@ -166,16 +228,16 @@ export const layers: SolutionLayer[] = [
             name: 'Docker Compose',
             status: 'Optional; configured',
             provides:
-              'Describes and starts the app, cache and proxy services together, with environment-specific configuration.',
+              'Describes the app, cache, proxy and monitoring services, with shared definitions and development/production overrides.',
             dependsOn:
-              'Docker and Compose, images, environment variables, networks and ports. It organizes peer services rather than placing the proxy or cache inside the app process.',
+              'Docker, images, environment variables, the configured external network, available ports and generated monitoring configuration/secrets. Monitoring currently lives in the base Compose file, without an optional profile.',
             children: [
               {
                 id: 'app-container',
                 name: 'App service container',
                 status: 'Configured',
                 provides:
-                  'A container boundary around the Node.js process. Development runs the Vite toolchain; production runs the built sirv service.',
+                  'A container boundary around the Node.js application. Development runs Express, GraphQL and Vite middleware; production runs the built server and its runtime dependencies.',
                 dependsOn:
                   'The Dockerfile and selected environment configuration. Development mounts source files; production uses the built artifact and server dependencies.',
               },
@@ -216,7 +278,7 @@ export const layers: SolutionLayer[] = [
         provides:
           'Caches eligible public responses to avoid repeated origin requests. This is an additional delivery capability, not a requirement for React, Vite or Node.js.',
         dependsOn:
-          'An HTTP origin, cacheability headers and VCL rules. The current rules bypass requests with cookies or authorization. It is bypassed in normal development; publication freshness and invalidation procedures still need documentation.',
+          'An HTTP origin and VCL rules. The current policy passes /api and non-GET/HEAD requests, avoids caching non-200 responses, and assigns successful responses one hour or matching asset paths seven days. It removes request cookies and response Set-Cookie headers; it is not a finished policy for authenticated or personalized content. Publication invalidation remains open. Direct development access bypasses Varnish; the configured proxy path can include it.',
       },
     ],
   },
@@ -224,7 +286,7 @@ export const layers: SolutionLayer[] = [
     id: 'observation',
     name: 'Optional observation — evidence about the running system',
     summary:
-      'Usage analytics and cache measurements answer different questions. Neither is necessary to build or serve the application.',
+      'Shared operational monitoring and visitor analytics answer different questions. Monitoring observes one server and its registered sites; useful automation must not be confused with malicious traffic.',
     solutions: [
       {
         id: 'betterlytics',
@@ -235,13 +297,95 @@ export const layers: SolutionLayer[] = [
           'A site ID, external service and collection policy. The hook does not prove collection is working and does not measure Varnish origin traffic.',
       },
       {
+        id: 'monitoring',
+        name: 'Shared server monitoring',
+        status: 'Implemented; exercised in a local production preview',
+        provides:
+          'A site registry, internal page/API probes, metrics, logs and alert rules for several sites behind one Traefik. A controlled app pause showed a cached page staying available while the uncached API failed and recovered.',
+        dependsOn:
+          'Configured sites, reachable services and persistent storage. Seven monitoring containers used roughly 594–714 MiB in short local observations, not a guaranteed ceiling. Same-host probes cannot independently detect total host failure. Browser errors and bot classification are not collected by this integration.',
+        evidence: {
+          label: 'Monitoring and our open-to-bots strategy',
+          path: '/blog/open-to-bots-closed-to-abuse',
+        },
+        children: [
+          {
+            id: 'prometheus',
+            name: 'Prometheus',
+            status: 'Configured and locally checked',
+            provides:
+              'Stores request rates, statuses, HTTP bytes, latency histograms, probe results and host/application metrics; evaluates alert rules.',
+            dependsOn:
+              'Scrape targets and storage. Metric retention is 30 days with a 2 GiB TSDB retention limit; temporary WAL/head usage is additional. Missing observations must not be counted as successful uptime.',
+          },
+          {
+            id: 'grafana',
+            name: 'Grafana',
+            status: 'Provisioned dashboard; locally checked',
+            provides:
+              'A site selector and views for availability, probe coverage, response times, errors, resources and logs.',
+            dependsOn:
+              'Prometheus, Loki and provisioned data sources. Login is required; the configured host port binds to loopback. HTTP response duration is not browser page-load time, and request counts are not a human audience estimate.',
+          },
+          {
+            id: 'loki-alloy',
+            name: 'Loki + Alloy',
+            status: 'Configured and locally checked',
+            provides:
+              'Collects logs from explicitly labelled containers, maps Traefik routes to sites and removes query strings before Loki ingestion. Log retention is seven days.',
+            dependsOn:
+              'Docker API access, labels and storage. Alloy is a trusted host-level collector: a read-only socket mount does not restrict Docker API methods. Raw Docker logs can still contain query strings; age-based retention is not a hard disk quota.',
+          },
+          {
+            id: 'exporters',
+            name: 'Blackbox Exporter + Node Exporter',
+            status: 'Configured and locally checked',
+            provides:
+              'Page and API checks every 30 seconds through internal Traefik, plus host CPU, memory and filesystem metrics.',
+            dependsOn:
+              'Registered probe targets and host metric access. Checks originate on the same server and do not prove public DNS/network reachability. Host resources are shared across workloads.',
+          },
+          {
+            id: 'application-metrics',
+            name: 'Node.js and GraphQL instrumentation',
+            status: 'Implemented',
+            provides:
+              'Process metrics, event-loop measurements, structured events and client/server GraphQL error counters, including errors returned with HTTP 200.',
+            dependsOn:
+              'The Prometheus client and a configured separate metrics listener. Metrics are not mounted on the public Express app. This does not report browser JavaScript errors.',
+          },
+          {
+            id: 'alertmanager',
+            name: 'Alertmanager',
+            status: 'Configured; notification channels optional',
+            provides:
+              'Groups alerts and recovery events. Optional email and Telegram delivery was exercised against isolated local fixtures.',
+            dependsOn:
+              'Generated configuration and channel credentials. Real provider authentication and recipient delivery need their own checks. Channels are disabled until configured.',
+          },
+        ],
+      },
+      {
+        id: 'geo-friendly',
+        name: 'GEO-friendly access and selective protection',
+        status: 'Strategy defined; filtering and classification open',
+        provides:
+          'Two requirements: serve legitimate requests efficiently at high volume, and welcome AI systems and other bots to public content while rejecting clearly malicious requests before application work. Monitoring supplies evidence for the owner’s local policy.',
+        dependsOn:
+          'Representative capacity measurements, site-specific rules and a chosen enforcement mechanism. Useful automation, rejected abuse and uncertain traffic need separate accounting. Current graphs include all traffic; no blocker or classifier is implemented, and GEO gains have not been measured. Public robots.txt currently allows crawling, which does not guarantee indexing or AI citations.',
+        evidence: {
+          label: 'Open to bots. Closed to abuse.',
+          path: '/blog/open-to-bots-closed-to-abuse',
+        },
+      },
+      {
         id: 'request-metrics',
         name: 'Request/cache measurement solution',
         status: 'Implementation open',
         provides:
-          'Would show cache hits and origin requests using measured data instead of the homepage illustrations.',
+          'Would quantify Varnish cache hits, misses and origin work over time. HTTP integration tests already check selected cache behavior; Traefik traffic graphs alone do not provide this breakdown.',
         dependsOn:
-          'An agreed metric, collection source and observation window. No measurement technology has been selected.',
+          'Varnish-specific counters or another verified source, plus an observation window. Dedicated cache-hit/origin-work monitoring remains open alongside the implemented request metrics.',
       },
     ],
   },
@@ -251,15 +395,6 @@ export const layers: SolutionLayer[] = [
     summary:
       'These remain requirement areas until a concrete solution is selected. They do not form a mandatory sequence of additions.',
     solutions: [
-      {
-        id: 'api',
-        name: 'Standalone API',
-        status: 'Open',
-        provides:
-          'Server operations or integrations beyond static delivery and browser-only interactions.',
-        dependsOn:
-          'An actual operation, an API contract, validation and a service runtime. No backend framework has been selected.',
-      },
       {
         id: 'storage',
         name: 'Persistent storage',
@@ -273,9 +408,9 @@ export const layers: SolutionLayer[] = [
         name: 'Typed API/data contracts',
         status: 'Open',
         provides:
-          'Consistent contracts across a growing application, beyond current component type checks.',
+          'Pothos already provides a typed server schema. Generated frontend operations, an API client and end-to-end data contracts remain open.',
         dependsOn:
-          'Actual API/data boundaries, runtime validation and a shared or generated contract approach.',
+          'A real frontend data interaction and a chosen client/code-generation approach, plus runtime validation where needed.',
       },
       {
         id: 'authorization',
