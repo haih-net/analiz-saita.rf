@@ -46,7 +46,10 @@ export default defineConfig(({ mode }) => {
       !process.env.VITEST && reactRouter(),
       serveShared(),
     ],
-    server: { allowedHosts: ['haih.localhost'] },
+    server: {
+      allowedHosts: ['haih.localhost'],
+      ws: { path: '/__vite_hmr' },
+    },
     define: {
       'import.meta.env.BETTERLYTICS_SITE_ID': JSON.stringify(
         env.BETTERLYTICS_SITE_ID || '',
