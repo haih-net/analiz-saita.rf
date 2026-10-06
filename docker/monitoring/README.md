@@ -115,9 +115,9 @@ Diagnosis: compare page and API probes, then edge 5xx/latency, application logs/
 
 ```bash
 npm run types
-npm run test:monitoring:unit
-npm run test:monitoring
-TEST_URL=http://127.0.0.1:18080 npm test
+npm test
+npm run test:integration
+TEST_URL=http://haih.localhost npm run test:integration:stack
 # Pauses ONLY the preview app, checks alert delivery and then restores it:
 npm run test:monitoring:failure
 # Isolated local SMTP and Telegram API fixtures; never sends external messages:

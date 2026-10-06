@@ -1,8 +1,6 @@
-import test from 'node:test'
-import assert from 'node:assert/strict'
+import { test, assert } from 'vitest'
 import { readFileSync, existsSync } from 'node:fs'
-import { author, canonicalUrl } from '../app/components/seo/site.ts'
-import { serializeJsonLd } from '../app/components/seo/JsonLd/helpers.ts'
+import { author, canonicalUrl } from '../../app/components/seo/site.ts'
 
 const paths = [
   '/',
@@ -15,7 +13,7 @@ const paths = [
 const read = (path) =>
   readFileSync(
     new URL(
-      `../build/client${path === '/' ? '' : path}/index.html`,
+      `../../build/client${path === '/' ? '' : path}/index.html`,
       import.meta.url,
     ),
     'utf8',
@@ -26,30 +24,10 @@ const graphOf = (head) =>
     head.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1],
   )['@graph']
 
-test('canonical URLs are stable across query, hash and trailing slash variants', () => {
-  assert.equal(
-    canonicalUrl('/blog/?ref=test#article'),
-    'https://haih.site/blog',
-  )
-  assert.equal(canonicalUrl('/'), 'https://haih.site/')
-  assert.throws(() => canonicalUrl('https://other.example/article'))
-})
-
-test('JSON-LD cannot terminate its script element, and round-trips unchanged', () => {
-  const data = {
-    '@context': 'https://schema.org',
-    '@type': 'WebPage',
-    name: '</script><script>alert(1)</script><!--',
-  }
-  const serialized = serializeJsonLd(data)
-  assert.ok(!serialized.includes('<'))
-  assert.deepEqual(JSON.parse(serialized), data)
-})
-
 test('every public page has unique canonical and metadata in prerendered head', () => {
   const descriptions = new Set()
   const sitemap = readFileSync(
-    new URL('../build/client/sitemap.xml', import.meta.url),
+    new URL('../../build/client/sitemap.xml', import.meta.url),
     'utf8',
   )
   for (const path of paths) {
@@ -75,7 +53,10 @@ test('every public page has unique canonical and metadata in prerendered head', 
     assert.equal(new URL(image).origin, 'https://haih.site')
     assert.ok(
       existsSync(
-        new URL(`../build/client${new URL(image).pathname}`, import.meta.url),
+        new URL(
+          `../../build/client${new URL(image).pathname}`,
+          import.meta.url,
+        ),
       ),
     )
     assert.ok(head.includes('property="og:image:alt"'))
@@ -188,7 +169,7 @@ for (const [
     const imagePath = new URL(article.image.url).pathname
     assert.ok(imagePath.startsWith('/assets/'))
     assert.ok(
-      existsSync(new URL(`../build/client${imagePath}`, import.meta.url)),
+      existsSync(new URL(`../../build/client${imagePath}`, import.meta.url)),
     )
     assert.equal(
       graph.find((node) => node['@type'] === 'BreadcrumbList').itemListElement
@@ -200,11 +181,12 @@ for (const [
 
 test('unknown SSR route is 404 and noindex without a fabricated canonical or article', async () => {
   const { createRequestHandler } = await import('react-router')
-  const build = await import('../build/server/index.js')
+  const { createRequire } = await import('node:module')
+  const build = createRequire(import.meta.url)('../../build/server/index.js')
   const response = await createRequestHandler(
     build,
     'production',
-  )(new Request('https://haih.site/missing-seo-page'))
+  )(new globalThis.Request('https://haih.site/missing-seo-page'))
   assert.equal(response.status, 404)
   const html = await response.text()
   const head = headOf(html)

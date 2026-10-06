@@ -119,7 +119,7 @@ docker/
 npm run dev        # Start Vite dev server
 npm run types      # TypeScript validation
 npm run build      # Production build
-npm run test       # HTTP behavior tests
+npm run test       # All unit tests (Vitest)
 ```
 
 ## The HAIH Approach
@@ -165,3 +165,30 @@ The shell uses small mobile-first plain CSS rules without adding a styling depen
 ## Server monitoring
 
 The [monitoring runbook](docker/monitoring/README.md) describes the production-artifact preview, Grafana dashboard, internal per-site probes, request/application logs and optional email/Telegram alerts. The installation is shared by sites behind one Traefik and uses an explicit site registry. [Verification results](docker/monitoring/verification.md) distinguish the local checks from unverified production behavior. Request filtering is deferred.
+
+## Tests
+
+| Command                          | Scope and prerequisites                                                                                                                       |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm test`                       | All unit tests; no build, Docker or running server required.                                                                                  |
+| `npm run test:watch`             | Unit tests in watch mode.                                                                                                                     |
+| `npm run test:coverage`          | Unit coverage in the terminal and `coverage/`.                                                                                                |
+| `npm run test:integration`       | Builds the site, then checks generated SEO/SSR output, monitoring configuration generation and GraphQL metrics with isolated local listeners. |
+| `npm run test:integration:watch` | Watches integration tests; run `npm run build` first and rebuild after changing page/build inputs.                                            |
+| `npm run test:integration:stack` | HTTP/cache and monitoring checks against an already running production preview stack.                                                         |
+| `npm run e2e`                    | Playwright: Chromium, WebKit and mobile Chromium; builds and starts the production Node server automatically.                                 |
+| `npm run e2e:webkit`             | Only the WebKit browser project.                                                                                                              |
+| `npm run e2e:report`             | Opens the last Playwright HTML report.                                                                                                        |
+
+Install browser binaries once with `npx playwright install chromium webkit` (Linux hosts may also need `npx playwright install-deps chromium webkit`). Playwright owns port 4317 and fails if it is already occupied. To test an existing server or the real proxy/cache path, supply `PLAYWRIGHT_BASE_URL`; in that mode it does not build or start a server:
+
+```bash
+PLAYWRIGHT_BASE_URL=http://haih.localhost npm run e2e
+TEST_URL=http://haih.localhost MONITORING_TEST_URL=http://127.0.0.1:18080 GRAFANA_TEST_URL=http://127.0.0.1:13000 npm run test:integration:stack
+```
+
+Stack tests require the [monitoring preview](docker/monitoring/README.md), its provisioned Grafana password file, and a `TEST_URL` routed through Traefik and Varnish. They are kept separate from local integration tests because they require external infrastructure. The suite fails when that infrastructure is unavailable; it does not silently skip checks. Failure injection and notification fixtures remain explicit `test:monitoring:failure` and `test:monitoring:notifications` commands and are never part of automatic test discovery.
+
+Add unit tests under `tests/unit/`, or colocate `*.test.ts` / `*.test.tsx` in `app/` (`*.test.ts` in `server/`). Put local integration tests in `tests/integration/`, stack checks in `tests/stack/`, and browser `*.spec.ts` files in `tests/e2e/`. Each runner discovers its own suite. Unit tests currently use the Node environment; browser behavior belongs in Playwright. Configurations use CommonJS exports to avoid adding default exports. Coverage measures the configured SEO and server source scope; it is unit coverage, not combined integration/browser coverage.
+
+Playwright checks hydration errors, same-document navigation, heading focus, metadata updates, browser history, deep-link refresh and 404 responses. Its default local server run does not prove Traefik/Varnish cache behavior or development HMR.
