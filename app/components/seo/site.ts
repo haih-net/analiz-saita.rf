@@ -1,9 +1,9 @@
 export const site = {
-  origin: 'https://haih.site',
-  name: 'HAIH',
-  language: 'en',
+  origin: 'https://xn----7sbaba3bglns3co.xn--p1ai',
+  name: 'Анализ сайта',
+  language: 'ru',
   description:
-    'Building a website with AI, starting from requirements. Explore the working implementation, technology choices, experiments and lessons from HAIH.',
+    'Анализ состояния сайта, трафика и пути к обращению. Николай Ланец: разобраться в причинах проблем и определить следующие изменения.',
 }
 
 // Preserve the identity published at https://fi1osof.ru/about.

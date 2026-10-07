@@ -1,24 +1,19 @@
 import type { MetaFunction } from 'react-router'
-import { createSeoMeta, unavailableSeoMeta } from '../components/seo/SeoHeaders'
-import type { SeoHandle } from '../components/seo/SeoHeaders'
-import MainPage from '../pages/MainPage'
-import delivery from '../pages/MainPage/Hero/delivery.webp'
-import { site } from '../components/seo/site'
+import { HomePage } from '../Custom/pages/HomePage'
+import {
+  createSeoMeta,
+  unavailableSeoMeta,
+  type SeoHandle,
+} from '../components/seo/SeoHeaders'
 
-export const handle = {
+export const handle: SeoHandle = {
   seo: {
-    title: 'HAIH — Building websites with AI, from requirements',
-    description: site.description,
+    title: 'Анализ сайта — Николай Ланец',
+    description:
+      'Анализ сайта: техническое состояние, трафик и путь к обращению. Николай Ланец помогает разобраться в причинах проблем и выбрать дальнейшие изменения.',
     path: '/',
-    image: {
-      src: delivery,
-      alt: 'A conceptual illustration of the HAIH website delivery architecture.',
-      width: 1200,
-      height: 800,
-    },
   },
-} satisfies SeoHandle
-
+}
 export const meta: MetaFunction = ({ error }) =>
   error ? unavailableSeoMeta() : createSeoMeta(handle.seo)
-export default MainPage
+export { HomePage as default }

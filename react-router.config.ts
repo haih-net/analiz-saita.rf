@@ -2,12 +2,16 @@ import type { Config } from '@react-router/dev/config'
 export default {
   ssr: true,
   prerender: [
+    '/contact',
+    '/content',
+    '/enquiries',
+    '/experience',
     '/',
-    '/solutions',
-    '/blog',
-    '/blog/eighteen-hours-a-real-portal-in-production',
-    '/blog/a-small-site-and-the-limits-we-found',
-    '/blog/one-server-two-modes-and-an-api',
+    '/process',
+    '/speed',
+    '/technical',
+    '/traffic',
+    '/usability',
   ],
   routeDiscovery: { mode: 'initial' },
 } satisfies Config
