@@ -1,3 +1,4 @@
+import { Statistics } from './components/Statistics'
 import { HtmlStyled } from './components/Layout/styles'
 import { SeoHeaders, unavailableSeoMeta } from './components/seo/SeoHeaders'
 
@@ -35,6 +36,7 @@ export function Layout({ children }: { children: ReactNode }) {
       </head>
       <body>
         <SiteLayout>{children}</SiteLayout>
+        <Statistics />
         <ScrollRestoration />
         <Scripts />
       </body>
