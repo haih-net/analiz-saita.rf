@@ -1,3 +1,5 @@
+import { Statistics } from './components/Statistics'
+import { errorPageStatusCode } from './components/Statistics/status'
 import type * as React from 'react'
 import {
   DocumentStyled,
@@ -46,7 +48,12 @@ export const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
   )
 }
 const App: React.FC = () => {
-  return <Outlet />
+  return (
+    <>
+      <Outlet />
+      <Statistics />
+    </>
+  )
 }
 
 export default App
@@ -55,6 +62,7 @@ export const ErrorBoundary: React.FC = () => {
   const error = useRouteError()
   return (
     <UnavailableStyled>
+      <Statistics statusCode={errorPageStatusCode(error)} />
       <h1 tabIndex={-1}>
         {isRouteErrorResponse(error)
           ? `${error.status} — Не удалось открыть страницу`

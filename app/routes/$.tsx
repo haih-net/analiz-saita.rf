@@ -4,8 +4,8 @@ import { data } from 'react-router'
 import { UnavailableStyled } from '../Custom/components/SiteLayout/styles'
 import { unavailableSeoMeta } from '../components/seo/SeoHeaders'
 export const meta: MetaFunction = unavailableSeoMeta
-export const loader = (): ReturnType<typeof data<null>> =>
-  data(null, { status: 404 })
+export const loader = (): ReturnType<typeof data<{ statusCode: number }>> =>
+  data({ statusCode: 404 }, { status: 404 })
 const NotFound: React.FC = () => (
   <UnavailableStyled>
     <h1 tabIndex={-1}>Страница не найдена</h1>

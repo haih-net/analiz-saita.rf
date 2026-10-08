@@ -1,8 +1,8 @@
-import test from 'node:test'
+import { test } from 'vitest'
 import assert from 'node:assert/strict'
 import { readFileSync, existsSync } from 'node:fs'
-import { canonicalUrl } from '../app/components/seo/site.ts'
-import { serializeJsonLd } from '../app/components/seo/JsonLd/helpers.ts'
+import { canonicalUrl } from '../../app/components/seo/site.ts'
+import { serializeJsonLd } from '../../app/components/seo/JsonLd/helpers.ts'
 
 const paths = [
   '/',
@@ -20,7 +20,7 @@ const origin = 'https://xn----7sbaba3bglns3co.xn--p1ai'
 const read = (path) =>
   readFileSync(
     new URL(
-      `../build/client${path === '/' ? '' : path}/index.html`,
+      `../../build/client${path === '/' ? '' : path}/index.html`,
       import.meta.url,
     ),
     'utf8',
@@ -41,7 +41,7 @@ test('все страницы предрендерены с уникальным
   const titles = new Set()
   const descriptions = new Set()
   const sitemap = readFileSync(
-    new URL('../build/client/sitemap.xml', import.meta.url),
+    new URL('../../build/client/sitemap.xml', import.meta.url),
     'utf8',
   )
   for (const path of paths) {
@@ -60,7 +60,7 @@ test('все страницы предрендерены с уникальным
     ]
     assert.ok(styles.length > 0)
     for (const [, css] of styles)
-      assert.ok(existsSync(new URL(`../build/client${css}`, import.meta.url)))
+      assert.ok(existsSync(new URL(`../../build/client${css}`, import.meta.url)))
     const body = html.match(/<main[^>]*>([\s\S]*?)<\/main>/)[1]
     const links = [...body.matchAll(/<a[^>]*href="([^"]+)"/g)].map(
       (match) => match[1],
@@ -84,7 +84,8 @@ test('все страницы предрендерены с уникальным
 })
 test('неизвестные маршруты возвращают 404 без canonical', async () => {
   const { createRequestHandler } = await import('react-router')
-  const build = await import('../build/server/index.js')
+  const { createRequire } = await import('node:module')
+  const build = createRequire(import.meta.url)('../../build/server/index.js')
   const handler = createRequestHandler(build, 'production')
   for (const path of ['/missing', '/assets/missing.js']) {
     const response = await handler(new Request(origin + path))
@@ -97,7 +98,8 @@ test('неизвестные маршруты возвращают 404 без ca
 
 test('посторонние страницы удалены из роутинга, sitemap и сборки', async () => {
   const { createRequestHandler } = await import('react-router')
-  const build = await import('../build/server/index.js')
+  const { createRequire } = await import('node:module')
+  const build = createRequire(import.meta.url)('../../build/server/index.js')
   const handler = createRequestHandler(build, 'production')
   for (const path of [
     '/blog',
@@ -108,13 +110,13 @@ test('посторонние страницы удалены из роутинг
     assert.equal(response.status, 404)
     assert.ok(!(await response.text()).includes('rel="canonical"'))
     const sitemap = readFileSync(
-      new URL('../build/client/sitemap.xml', import.meta.url),
+      new URL('../../build/client/sitemap.xml', import.meta.url),
       'utf8',
     )
     assert.ok(!sitemap.includes(`<loc>${origin}${path}</loc>`))
     assert.ok(
       !existsSync(
-        new URL(`../build/client${path}/index.html`, import.meta.url),
+        new URL(`../../build/client${path}/index.html`, import.meta.url),
       ),
     )
   }
